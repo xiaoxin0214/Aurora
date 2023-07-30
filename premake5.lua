@@ -63,6 +63,7 @@ project "Aurora"
 			"AURORA_ENABLE_ASSERT"
 		}
 		symbols "On"
+		buildoptions "/MDd"
 
 	filter "configurations:Release"
 		defines
@@ -70,6 +71,8 @@ project "Aurora"
 			"AURORA_RELEASE"
 		}
 		optimize "On"
+		buildoptions "/MD"
+
 
 	filter "configurations:Distribution"
 		defines
@@ -77,6 +80,7 @@ project "Aurora"
 			"AURORA_DISTRIBUTION"
 		}
 		optimize "On"
+		buildoptions "/MD"
 
 project "SandBox"
 	location "SandBox"
@@ -117,6 +121,7 @@ project "SandBox"
 			"AURORA_DEBUG"
 		}
 		symbols "On"
+		buildoptions "/MDd"
 
 	filter "configurations:Release"
 		defines
@@ -124,6 +129,7 @@ project "SandBox"
 			"AURORA_RELEASE"
 		}
 		optimize "On"
+		buildoptions "/MD"
 
 	filter "configurations:Distribution"
 		defines
@@ -131,3 +137,4 @@ project "SandBox"
 			"AURORA_DISTRIBUTION"
 		}
 		optimize "On"
+		buildoptions "/MD"

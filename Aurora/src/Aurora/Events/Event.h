@@ -41,6 +41,10 @@ namespace Aurora
 		inline bool IsInCategory(EventCategory category) {
 			return GetCategoryFlags() & category;
 		}
+
+		inline bool IsHandled()const {
+			return m_isHandled;
+		}
 	protected:
 		bool m_isHandled;
 	};

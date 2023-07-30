@@ -19,9 +19,25 @@ namespace Aurora
 
 	void Application::OnEvent(const Event& e)
 	{
-		AURORA_CORE_TRACE(e.ToString());
 		EventDispatcher dispatcher(const_cast<Event&>(e));
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
+
+		for (auto iter = m_lyrStack.end(); iter != m_lyrStack.begin();)
+		{
+			(*--iter)->OnEvent(e);
+			if (e.IsHandled())
+				break;
+		}
+	}
+
+	void Application::PushLayer(Layer* lyr)
+	{
+		m_lyrStack.PushLayer(lyr);
+	}
+
+	void Application::PushOverlay(Layer* overlay)
+	{
+		m_lyrStack.PushOverlay(overlay);
 	}
 
 	bool Application::OnWindowCloseEvent(const WindowCloseEvent&e)
@@ -35,6 +51,10 @@ namespace Aurora
 		while (m_isRunning)
 		{
 			m_pWindow->OnUpdate();
+			for (Layer* lyr : m_lyrStack)
+			{
+				lyr->OnUpdate();
+			}
 		}
 	}
 
