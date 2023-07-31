@@ -1,6 +1,6 @@
 !vendor/bin/premake
-/bin
-/bin-int
+**\bin
+**\bin-int
 \.vs
 *.vcxproj
 *.vcxproj.filters

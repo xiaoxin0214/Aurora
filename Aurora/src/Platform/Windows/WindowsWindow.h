@@ -1,6 +1,6 @@
 #pragma once
 #include "Aurora/Window.h"
-#include "GLFW/glfw3.h"
+struct GLFWwindow;
 namespace Aurora
 {
 	class AURORA_API WindowsWindow :public Window

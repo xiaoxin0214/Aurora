@@ -10,7 +10,10 @@ workspace "Aurora"
 outputdir="%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir={}
 IncludeDir["GLFW"]="Aurora/vendor/GLFW/include"
+IncludeDir["GLAD"]="Aurora/vendor/GLAD/include"
+
 include "Aurora/vendor/GLFW"
+include "Aurora/vendor/GLAD"
 
 project "Aurora"
 	location "Aurora"
@@ -32,12 +35,14 @@ project "Aurora"
 	{
 		"%{prj.name}/vendor/spdlog/include",
 		"%{prj.name}/src",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}"
 	}
 
 	links
 	{
 		"GLFW",
+		"GLAD",
 		"opengl32.lib"
 	}
 
@@ -48,7 +53,8 @@ project "Aurora"
 		defines
 		{
 			"AURORA_PLATFORM_WINDOWS",
-			"AURORA_BUILD_DLL"
+			"AURORA_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands

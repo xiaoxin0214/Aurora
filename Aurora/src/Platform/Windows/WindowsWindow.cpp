@@ -4,6 +4,9 @@
 #include "Aurora/Events/ApplicationEvent.h"
 #include "Aurora/Events/KeyEvent.h"
 #include "Aurora/Events/MouseEvent.h"
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+
 namespace Aurora
 {
 
@@ -46,6 +49,8 @@ namespace Aurora
 
 		m_pWindow = glfwCreateWindow(m_data.width, m_data.height, m_data.title.c_str(), NULL, NULL);
 		glfwMakeContextCurrent(m_pWindow);
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		AURORA_CORE_ASSERT(status, "GLAD ≥ı ºªØ ß∞‹!")
 		glfwSetWindowUserPointer(m_pWindow, &m_data);
 		SetVSync(true);
 
