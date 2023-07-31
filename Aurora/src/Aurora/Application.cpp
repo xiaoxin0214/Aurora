@@ -5,8 +5,12 @@
 namespace Aurora
 {
 #define BIND_EVENT_FN(func) std::bind(&func,this,std::placeholders::_1)
+
+	Application* Application:: s_pInstance = NULL;
 	Application::Application()
 	{
+		AURORA_CORE_ASSERT(NULL==s_pInstance,"Application 已经初始化过了！");
+		s_pInstance = this;
 		m_pWindow = std::unique_ptr<Window>(Window::Create());
 		m_pWindow->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_isRunning = true;
@@ -33,11 +37,13 @@ namespace Aurora
 	void Application::PushLayer(Layer* lyr)
 	{
 		m_lyrStack.PushLayer(lyr);
+		lyr->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
 		m_lyrStack.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 
 	bool Application::OnWindowCloseEvent(const WindowCloseEvent&e)
