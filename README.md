@@ -18,4 +18,9 @@ git submodule update --init --recursive
 
 Aurora使用premake编译代码
 
-你可以直接双击运行`GenerateProjects.bat`脚本生成`vs2019`解决方案
+你可以直接双击运行`GenerateProjects.bat`脚本生成`vs2019`解决方案，修改`GenerateProjects.bat`脚本中vs版本即可生成不同vs版本的解决方案
+
+```
+call vendor\bin\premake\premake5.exe vs2022
+```
+
