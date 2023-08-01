@@ -41,6 +41,6 @@ namespace Aurora
 		};
 
 		WindowData          m_data;
-		GLFWwindow*         m_pWindow;
+		GLFWwindow* m_pWindow;
 	};
 }

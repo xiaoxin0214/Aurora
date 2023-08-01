@@ -1,6 +1,9 @@
 #pragma once
 #include "Core.h"
 #include "Events/Event.h"
+#include "Events/ApplicationEvent.h"
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
 namespace Aurora
 {
 	class AURORA_API Layer

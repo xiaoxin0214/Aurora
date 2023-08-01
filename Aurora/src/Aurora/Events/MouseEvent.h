@@ -57,7 +57,7 @@ namespace Aurora
 	public:
 		inline int GetButton()const { return m_button; }
 
-		EVENT_CLASS_CATEGORY(EventCategoryMouse|EventCategoryInput)
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	protected:
 		MouseButtonEvent(int button) :m_button(button)
 		{
@@ -76,10 +76,10 @@ namespace Aurora
 
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 
-		std::string ToString()const override
+			std::string ToString()const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonPressedEvent:" <<GetButton();
+			ss << "MouseButtonPressedEvent:" << GetButton();
 			return ss.str();
 		}
 	};
@@ -93,7 +93,7 @@ namespace Aurora
 
 		EVENT_CLASS_TYPE(MouseButtonReleased)
 
-		std::string ToString()const override
+			std::string ToString()const override
 		{
 			std::stringstream ss;
 			ss << "MouseButtonReleasedEvent:" << GetButton();

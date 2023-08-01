@@ -3,7 +3,7 @@
 #include "Aurora/Layer.h"
 namespace Aurora
 {
-	class AURORA_API ImGuiLayer:public Layer
+	class AURORA_API ImGuiLayer :public Layer
 	{
 	public:
 		ImGuiLayer();
@@ -13,6 +13,15 @@ namespace Aurora
 		void OnAttach()override;
 		void OnUpdate()override;
 		void OnEvent(const Event& e)override;
+	private:
+		bool OnWindowsResizeEvent(const WindowResizeEvent& e);
+		bool OnMouseMovedEvent(const MouseMovedEvent& e);
+		bool OnMouseScrolledEvent(const MouseScrolledEvent& e);
+		bool OnMouseButtonPressedEvent(const MouseButtonPressedEvent& e);
+		bool OnMouseButtonReleasedEvent(const MouseButtonReleasedEvent&e);
+		bool OnKeyPressedEvent(const KeyPressedEvent& e);
+		bool OnKeyReleasedEvent(const KeyReleasedEvent& e);
+		bool OnKeyTypedEvent(const KeyTypedEvent&e);
 	private:
 		float m_time;
 	};

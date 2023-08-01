@@ -2,14 +2,13 @@
 #include "Application.h"
 #include "Log.h"
 #include "Events/Event.h"
+#include "glad/glad.h"
 namespace Aurora
 {
-#define BIND_EVENT_FN(func) std::bind(&func,this,std::placeholders::_1)
-
-	Application* Application:: s_pInstance = NULL;
+	Application* Application::s_pInstance = NULL;
 	Application::Application()
 	{
-		AURORA_CORE_ASSERT(NULL==s_pInstance,"Application 已经初始化过了！");
+		AURORA_CORE_ASSERT(NULL == s_pInstance, "Application 已经初始化过了！");
 		s_pInstance = this;
 		m_pWindow = std::unique_ptr<Window>(Window::Create());
 		m_pWindow->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
@@ -46,7 +45,7 @@ namespace Aurora
 		overlay->OnAttach();
 	}
 
-	bool Application::OnWindowCloseEvent(const WindowCloseEvent&e)
+	bool Application::OnWindowCloseEvent(const WindowCloseEvent& e)
 	{
 		m_isRunning = false;
 		return true;
@@ -56,11 +55,13 @@ namespace Aurora
 	{
 		while (m_isRunning)
 		{
-			m_pWindow->OnUpdate();
+			glClear(GL_COLOR_BUFFER_BIT);
 			for (Layer* lyr : m_lyrStack)
 			{
 				lyr->OnUpdate();
 			}
+			m_pWindow->OnUpdate();
+
 		}
 	}
 

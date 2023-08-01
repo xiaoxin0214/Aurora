@@ -18,7 +18,7 @@ namespace Aurora {
 
 	void LayerStack::PushLayer(Layer* lyr)
 	{
-		m_insertIter=m_lyrs.emplace(m_insertIter, lyr);
+		m_insertIter = m_lyrs.emplace(m_insertIter, lyr);
 	}
 
 	void LayerStack::PopLayer(Layer* lyr)

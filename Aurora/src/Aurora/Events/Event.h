@@ -8,7 +8,7 @@ namespace Aurora
 		None = 0,
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased,
+		KeyPressed, KeyReleased,KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
@@ -64,7 +64,7 @@ namespace Aurora
 		{
 			if (m_event.GetEventType() == T::GetStaticType())
 			{
-				m_event.m_isHandled=func(*(T*)(&m_event));
+				m_event.m_isHandled = func(*(T*)(&m_event));
 				return true;
 			}
 			return false;

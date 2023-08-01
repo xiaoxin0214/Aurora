@@ -11,10 +11,10 @@ public:
 	void OnUpdate()override {
 		AURORA_TRACE("ExampleLayer::OnUpdate");
 	}
-	
+
 	void OnEvent(const Aurora::Event& e)override
 	{
-		AURORA_TRACE("ExampleLayer::OnEvent:{0}",e.ToString());
+		AURORA_TRACE("ExampleLayer::OnEvent:{0}", e.ToString());
 	}
 };
 class SandBox :public Aurora::Application {

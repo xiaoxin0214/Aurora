@@ -26,7 +26,7 @@ namespace Aurora
 		ShutDown();
 	}
 
-	static void GLFWErrorCallback(int error,const char*description)
+	static void GLFWErrorCallback(int error, const char* description)
 	{
 		AURORA_CORE_ERROR("GLFW ERROR ({0}):{1}", error, description);
 	}
@@ -43,7 +43,7 @@ namespace Aurora
 		{
 			int success = glfwInit();
 			AURORA_CORE_ASSERT(success, "GLFW 初始化失败!")
-			s_glfwInited = true;
+				s_glfwInited = true;
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
@@ -51,7 +51,7 @@ namespace Aurora
 		glfwMakeContextCurrent(m_pWindow);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		AURORA_CORE_ASSERT(status, "GLAD 初始化失败!")
-		glfwSetWindowUserPointer(m_pWindow, &m_data);
+			glfwSetWindowUserPointer(m_pWindow, &m_data);
 		SetVSync(true);
 
 		glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow* pWindow, int width, int height) ->void {
@@ -109,6 +109,11 @@ namespace Aurora
 		glfwSetCursorPosCallback(m_pWindow, [](GLFWwindow* pWindow, double xpos, double ypos)->void {
 			WindowData* pData = (WindowData*)glfwGetWindowUserPointer(pWindow);
 			pData->callback(MouseMovedEvent(xpos, ypos));
+			});
+
+		glfwSetCharCallback(m_pWindow, [](GLFWwindow* pWindow, unsigned int codepoint)->void {
+			WindowData* pData = (WindowData*)glfwGetWindowUserPointer(pWindow);
+			pData->callback(KeyTypedEvent(codepoint));
 			});
 	}
 
