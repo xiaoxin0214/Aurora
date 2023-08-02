@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "Events/Event.h"
 #include "glad/glad.h"
+#include "Input.h"
 namespace Aurora
 {
 	Application* Application::s_pInstance = NULL;
@@ -61,7 +62,6 @@ namespace Aurora
 				lyr->OnUpdate();
 			}
 			m_pWindow->OnUpdate();
-
 		}
 	}
 

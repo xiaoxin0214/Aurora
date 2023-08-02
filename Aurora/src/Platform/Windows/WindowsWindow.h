@@ -28,6 +28,10 @@ namespace Aurora
 		{
 			return m_data.vSync;
 		}
+
+		void* GetNativeWindow()const override {
+			return m_pWindow;
+		}
 	private:
 		void Init(const WindowProps& props);
 		void ShutDown();

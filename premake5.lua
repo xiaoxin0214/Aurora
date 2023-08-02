@@ -7,6 +7,8 @@ workspace "Aurora"
 		"Distribution"
 	}
 
+startproject "SandBox"
+
 outputdir="%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir={}
 IncludeDir["GLFW"]="Aurora/vendor/GLFW/include"
@@ -17,10 +19,12 @@ include "Aurora/vendor/GLFW"
 include "Aurora/vendor/GLAD"
 include "Aurora/vendor/imgui"
 
+
 project "Aurora"
 	location "Aurora"
 	kind "SharedLib"
 	language "C++"
+	staticruntime "off"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -52,7 +56,6 @@ project "Aurora"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 		defines
 		{
@@ -63,7 +66,7 @@ project "Aurora"
 
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/SandBox")
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/SandBox/\"")
 		}
 
 	filter "configurations:Debug"
@@ -73,7 +76,7 @@ project "Aurora"
 			"AURORA_ENABLE_ASSERT"
 		}
 		symbols "On"
-		buildoptions "/MDd"
+		runtime "Debug"
 
 	filter "configurations:Release"
 		defines
@@ -81,7 +84,7 @@ project "Aurora"
 			"AURORA_RELEASE"
 		}
 		optimize "On"
-		buildoptions "/MD"
+		runtime "Release"
 
 
 	filter "configurations:Distribution"
@@ -90,12 +93,13 @@ project "Aurora"
 			"AURORA_DISTRIBUTION"
 		}
 		optimize "On"
-		buildoptions "/MD"
+		runtime "Release"
 
 project "SandBox"
 	location "SandBox"
 	kind "ConsoleApp"
 	language "C++"
+	staticruntime "off"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -118,7 +122,6 @@ project "SandBox"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 		defines
 		{
@@ -131,7 +134,7 @@ project "SandBox"
 			"AURORA_DEBUG"
 		}
 		symbols "On"
-		buildoptions "/MDd"
+		runtime "Debug"
 
 	filter "configurations:Release"
 		defines
@@ -139,7 +142,7 @@ project "SandBox"
 			"AURORA_RELEASE"
 		}
 		optimize "On"
-		buildoptions "/MD"
+		runtime "Release"
 
 	filter "configurations:Distribution"
 		defines
@@ -147,4 +150,4 @@ project "SandBox"
 			"AURORA_DISTRIBUTION"
 		}
 		optimize "On"
-		buildoptions "/MD"
+		runtime "Release"

@@ -20,6 +20,10 @@ namespace Aurora
 			return m_pWindow.get();
 		}
 
+		inline void* GetNativeWindow()const {
+			return m_pWindow->GetNativeWindow();
+		}
+
 		static Application* GetInstance()
 		{
 			return s_pInstance;
