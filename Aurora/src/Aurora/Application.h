@@ -3,6 +3,8 @@
 #include "Window.h"
 #include "Events/ApplicationEvent.h"
 #include "LayerStack.h"
+#include "ImGui/ImGuiLayer.h"
+
 namespace Aurora
 {
 	class AURORA_API Application
@@ -31,10 +33,11 @@ namespace Aurora
 	private:
 		bool OnWindowCloseEvent(const WindowCloseEvent& e);
 	private:
-		static Application* s_pInstance;
-		std::unique_ptr<Window> m_pWindow;
-		bool                    m_isRunning;
-		LayerStack              m_lyrStack;
+		static Application*              s_pInstance;
+		std::unique_ptr<Window>          m_pWindow;
+		ImGuiLayer*                      m_pImguiLayer;
+		bool                             m_isRunning;
+		LayerStack                       m_lyrStack;
 	};
 
 	Application* CreateApplication();

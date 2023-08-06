@@ -23,6 +23,6 @@ namespace Aurora
 
 	private:
 		std::vector<Layer*>            m_lyrs;
-		std::vector<Layer*>::iterator  m_insertIter;
+		std::int32_t                   m_insertIndex;
 	};
 }

@@ -3,7 +3,7 @@
 namespace Aurora {
 	LayerStack::LayerStack()
 	{
-		m_insertIter = m_lyrs.begin();
+		m_insertIndex = 0;
 	}
 
 	LayerStack::~LayerStack()
@@ -18,7 +18,8 @@ namespace Aurora {
 
 	void LayerStack::PushLayer(Layer* lyr)
 	{
-		m_insertIter = m_lyrs.emplace(m_insertIter, lyr);
+		m_lyrs.emplace(m_lyrs.begin()+m_insertIndex, lyr);
+		m_insertIndex++;
 	}
 
 	void LayerStack::PopLayer(Layer* lyr)
@@ -27,7 +28,7 @@ namespace Aurora {
 		if (iter != m_lyrs.end())
 		{
 			m_lyrs.erase(iter);
-			m_insertIter--;
+			m_insertIndex--;
 		}
 	}
 

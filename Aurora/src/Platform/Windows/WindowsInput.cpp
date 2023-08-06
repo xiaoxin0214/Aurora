@@ -36,6 +36,6 @@ namespace Aurora
 		double x, y;
 		auto pWindow = static_cast<GLFWwindow*>(Application::GetInstance()->GetNativeWindow());
 		glfwGetCursorPos(pWindow, &x, &y);
-		return std::make_pair(x, y);
+		return std::make_pair((float)x, (float)y);
 	}
 }

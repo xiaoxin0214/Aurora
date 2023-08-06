@@ -1,6 +1,7 @@
 project "GLAD"
 kind "StaticLib"
 language "C"
+staticruntime "On"
 
 targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -17,20 +18,13 @@ includedirs
     "include"
 }
 
-filter "system:linux"
-    pic "On"
-
-    systemversion "latest"
-    staticruntime "On"
-
 filter "system:windows"
     systemversion "latest"
-    staticruntime "On"
 
 filter "configurations:Debug"
     runtime "Debug"
-    symbols "On"
+    symbols "on"
 
 filter "configurations:Release"
     runtime "Release"
-    optimize "On"
+    optimize "on"

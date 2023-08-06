@@ -79,7 +79,7 @@ namespace Aurora
 			case GLFW_REPEAT:
 				pData->callback(KeyPressedEvent(key, 1));
 				break;
-			defaule:
+			default:
 				break;
 			}
 			});
@@ -103,12 +103,12 @@ namespace Aurora
 
 		glfwSetScrollCallback(m_pWindow, [](GLFWwindow* pWindow, double xoffset, double yoffset)->void {
 			WindowData* pData = (WindowData*)glfwGetWindowUserPointer(pWindow);
-			pData->callback(MouseScrolledEvent(xoffset, yoffset));
+			pData->callback(MouseScrolledEvent((float)xoffset, (float)yoffset));
 			});
 
 		glfwSetCursorPosCallback(m_pWindow, [](GLFWwindow* pWindow, double xpos, double ypos)->void {
 			WindowData* pData = (WindowData*)glfwGetWindowUserPointer(pWindow);
-			pData->callback(MouseMovedEvent(xpos, ypos));
+			pData->callback(MouseMovedEvent((float)xpos, (float)ypos));
 			});
 
 		glfwSetCharCallback(m_pWindow, [](GLFWwindow* pWindow, unsigned int codepoint)->void {

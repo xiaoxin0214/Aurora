@@ -22,7 +22,6 @@ public:
 	SandBox()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Aurora::ImGuiLayer());
 	}
 };
 

@@ -14,6 +14,7 @@ IncludeDir={}
 IncludeDir["GLFW"]="Aurora/vendor/GLFW/include"
 IncludeDir["GLAD"]="Aurora/vendor/GLAD/include"
 IncludeDir["ImGui"]="Aurora/vendor/imgui"
+IncludeDir["GLM"]="Aurora/vendor/glm/glm"
 
 include "Aurora/vendor/GLFW"
 include "Aurora/vendor/GLAD"
@@ -22,9 +23,10 @@ include "Aurora/vendor/imgui"
 
 project "Aurora"
 	location "Aurora"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
-	staticruntime "off"
+	cppdialect "C++17"
+	staticruntime "on"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -43,7 +45,8 @@ project "Aurora"
 		"%{prj.name}/src",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.GLM}"
 	}
 
 	links
@@ -55,27 +58,21 @@ project "Aurora"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
 		defines
 		{
 			"AURORA_PLATFORM_WINDOWS",
 			"AURORA_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
-		}
-
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/SandBox/\"")
+			"GLFW_INCLUDE_NONE",
+			"_CRT_SECURE_NO_WARNINGS"
 		}
 
 	filter "configurations:Debug"
 		defines
 		{
 			"AURORA_DEBUG",
-			"AURORA_ENABLE_ASSERT"
 		}
-		symbols "On"
+		symbols "on"
 		runtime "Debug"
 
 	filter "configurations:Release"
@@ -83,7 +80,7 @@ project "Aurora"
 		{
 			"AURORA_RELEASE"
 		}
-		optimize "On"
+		optimize "on"
 		runtime "Release"
 
 
@@ -92,14 +89,15 @@ project "Aurora"
 		{
 			"AURORA_DISTRIBUTION"
 		}
-		optimize "On"
+		optimize "on"
 		runtime "Release"
 
 project "SandBox"
 	location "SandBox"
 	kind "ConsoleApp"
 	language "C++"
-	staticruntime "off"
+	cppdialect "C++17"
+	staticruntime "on"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -121,7 +119,6 @@ project "SandBox"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
 		defines
 		{

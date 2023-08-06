@@ -14,6 +14,8 @@ namespace Aurora
 		m_pWindow = std::unique_ptr<Window>(Window::Create());
 		m_pWindow->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_isRunning = true;
+		m_pImguiLayer = new ImGuiLayer();
+		PushOverlay(m_pImguiLayer);
 	}
 
 	Application::~Application()
@@ -61,6 +63,14 @@ namespace Aurora
 			{
 				lyr->OnUpdate();
 			}
+
+			m_pImguiLayer->Begin();
+			for (Layer* lyr : m_lyrStack)
+			{
+				lyr->OnImGuiRender();
+			}
+			m_pImguiLayer->End();
+
 			m_pWindow->OnUpdate();
 		}
 	}
