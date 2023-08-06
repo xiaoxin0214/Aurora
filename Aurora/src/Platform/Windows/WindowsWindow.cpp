@@ -4,8 +4,8 @@
 #include "Aurora/Events/ApplicationEvent.h"
 #include "Aurora/Events/KeyEvent.h"
 #include "Aurora/Events/MouseEvent.h"
-#include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Aurora
 {
@@ -48,10 +48,10 @@ namespace Aurora
 		}
 
 		m_pWindow = glfwCreateWindow(m_data.width, m_data.height, m_data.title.c_str(), NULL, NULL);
-		glfwMakeContextCurrent(m_pWindow);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		AURORA_CORE_ASSERT(status, "GLAD ³õÊ¼»¯Ê§°Ü!")
-			glfwSetWindowUserPointer(m_pWindow, &m_data);
+		m_pContext = new OpenGLContext(m_pWindow);
+		m_pContext->Init();
+
+		glfwSetWindowUserPointer(m_pWindow, &m_data);
 		SetVSync(true);
 
 		glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow* pWindow, int width, int height) ->void {
@@ -139,6 +139,6 @@ namespace Aurora
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_pWindow);
+		m_pContext->SwapBuffers();
 	}
 }

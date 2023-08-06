@@ -4,7 +4,9 @@
 #include "Events/ApplicationEvent.h"
 #include "LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
-
+#include "Renderer/Shader.h"
+#include "Renderer/VertexBuffer.h"
+#include "Renderer/IndexBuffer.h"
 namespace Aurora
 {
 	class AURORA_API Application
@@ -38,6 +40,11 @@ namespace Aurora
 		ImGuiLayer*                      m_pImguiLayer;
 		bool                             m_isRunning;
 		LayerStack                       m_lyrStack;
+	private:
+		unsigned int m_vertexArray;
+		std::unique_ptr<VertexBuffer> m_vertexBuffer;
+		std::unique_ptr<IndexBuffer> m_indexBuffer;
+		std::unique_ptr<Shader> m_shader;
 	};
 
 	Application* CreateApplication();

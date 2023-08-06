@@ -3,6 +3,7 @@
 struct GLFWwindow;
 namespace Aurora
 {
+	class GraphicsContext;
 	class AURORA_API WindowsWindow :public Window
 	{
 	public:
@@ -46,5 +47,6 @@ namespace Aurora
 
 		WindowData          m_data;
 		GLFWwindow*         m_pWindow;
+		GraphicsContext*    m_pContext;
 	};
 }
