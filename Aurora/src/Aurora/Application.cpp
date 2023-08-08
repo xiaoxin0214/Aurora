@@ -2,11 +2,12 @@
 #include "Application.h"
 #include "Log.h"
 #include "Events/Event.h"
-#include "glad/glad.h"
 #include "Input.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/IndexBuffer.h"
+#include "Renderer/BufferLayout.h"
+#include "Renderer/Renderer.h"
 namespace Aurora
 {
 	Application* Application::s_pInstance = NULL;
@@ -20,34 +21,38 @@ namespace Aurora
 		m_pImguiLayer = new ImGuiLayer();
 		PushOverlay(m_pImguiLayer);
 
-		glGenVertexArrays(1, &m_vertexArray);
-		glBindVertexArray(m_vertexArray);
-
-
-		float vertices[3 * 3] = {
-			-0.5f,-0.5f,0.0f,
-			0.5f,-0.5f,0.0f,
-			0.0f,0.5f,0.0f
+		float vertices[3 * 7] = {
+			-0.5f,-0.5f,0.0f,1.0f,0.0f,0.0f,1.0f,
+			0.5f,-0.5f,0.0f,0.0f,1.0f,0.0f,1.0f,
+			0.0f,0.5f,0.0f,0.0f,0.0f,1.0f,1.0f
 		};
+
+		BufferLayout layout({ {ShaderDataType::Float3,"a_pos"},{ShaderDataType::Float4,"a_color"}});
 
 		unsigned int indices[3] = {
 			0,1,2
 		};
 
-		m_vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-		m_indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)));
+		std::shared_ptr<IndexBuffer> indexBuffer;
+		std::shared_ptr<VertexBuffer> vertexBuffer;
+		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)));
+		vertexBuffer->SetLayout(layout);
 
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-
+		m_vertexArray.reset(VertexArray::Create());
+		m_vertexArray->AddVertexBuffer(vertexBuffer);
+		m_vertexArray->SetIndexBuffer(indexBuffer);
 
 		std::string vs = R"(
 				#version 330 core
 				layout(location = 0) in vec3 a_pos;
+				layout(location =1) in vec4 a_color;
 				out vec3 v_pos;
+				out vec4 v_color;
 				void main()
 				{
 					v_pos=a_pos;
+					v_color= a_color;
 					gl_Position=vec4(a_pos,1.0);
 				}
 			)";
@@ -55,14 +60,13 @@ namespace Aurora
 				#version 330 core
 				layout(location = 0) out vec4 color;
 				in vec3 v_pos;
+				in vec4 v_color;
 				void main()
 				{
-					color=vec4(v_pos,1.0);
+					color=v_color;
 				}
 			)";
 		m_shader.reset(new OpenGLShader(vs, fs));
-		m_vertexBuffer->Bind();
-		m_indexBuffer->Bind();
 	}
 
 	Application::~Application()
@@ -105,10 +109,11 @@ namespace Aurora
 	{
 		while (m_isRunning)
 		{
-			glClear(GL_COLOR_BUFFER_BIT);
 			m_shader->Bind();
-			glBindVertexArray(m_vertexArray);
-			glDrawElements(GL_TRIANGLES, m_indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::BeginScene();
+			Renderer::Submit(m_vertexArray);
+			Renderer::EndScene();
+
 			for (Layer* lyr : m_lyrStack)
 			{
 				lyr->OnUpdate();

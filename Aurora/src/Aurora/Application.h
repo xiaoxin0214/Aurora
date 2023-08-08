@@ -7,6 +7,7 @@
 #include "Renderer/Shader.h"
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/IndexBuffer.h"
+#include "Renderer/VertexArray.h"
 namespace Aurora
 {
 	class AURORA_API Application
@@ -41,11 +42,9 @@ namespace Aurora
 		bool                             m_isRunning;
 		LayerStack                       m_lyrStack;
 	private:
-		unsigned int m_vertexArray;
-		std::unique_ptr<VertexBuffer> m_vertexBuffer;
-		std::unique_ptr<IndexBuffer> m_indexBuffer;
-		std::unique_ptr<Shader> m_shader;
-	};
+		std::shared_ptr<VertexArray> m_vertexArray;
+		std::shared_ptr<Shader> m_shader;
+	};	
 
 	Application* CreateApplication();
 }

@@ -7,13 +7,13 @@ namespace Aurora
 {
 	VertexBuffer* VertexBuffer::Create(float* vertices, std::uint32_t size)
 	{
-		RendererAPI currentAPI = Renderer::GetCurrentAPI();
-		if (RendererAPI::None == currentAPI)
+		RendererAPI::API currentAPI = Renderer::GetCurrentAPI();
+		if (RendererAPI::API::None == currentAPI)
 		{
 			AURORA_CORE_ASSERT(false, "RendererAPI::None ÔÝ²»Ö§³Ö£¡");
 			return NULL;
 		}
-		else if (RendererAPI::OpenGL == currentAPI)
+		else if (RendererAPI::API::OpenGL == currentAPI)
 		{
 			return new OpenGLVertexBuffer(vertices, size);
 		}

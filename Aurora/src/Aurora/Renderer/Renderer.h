@@ -1,20 +1,21 @@
 #pragma once
 #include "Aurora/Core.h"
+#include "RendererAPI.h"
 namespace Aurora
 {
-	enum class AURORA_API RendererAPI
-	{
-		None,
-		OpenGL
-	};
+
 	class AURORA_API Renderer
 	{
 	public:
-		static RendererAPI GetCurrentAPI()
+		static RendererAPI::API GetCurrentAPI()
 		{
-			return s_currentRendererAPI;
+			return RendererAPI::GetCurrentAPI();
 		}
+
+		static void BeginScene();
+		static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+		static void EndScene();
 	private:
-		static RendererAPI s_currentRendererAPI;
+
 	};
 }
