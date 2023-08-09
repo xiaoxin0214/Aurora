@@ -12,6 +12,7 @@ namespace Aurora
 	public:
 		void Bind()const override;
 		void UnBind()const override;
+		void SetUniformMat4(const std::string&name,const glm::mat4& matrix)override;
 	private:
 		static unsigned int CreateShader(int type, const std::string& src);
 	private:

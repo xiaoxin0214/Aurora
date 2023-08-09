@@ -80,7 +80,7 @@ namespace Aurora
 	class AURORA_API BufferLayout
 	{
 	public:
-		BufferLayout()
+		BufferLayout():m_stride(0)
 		{
 
 		}

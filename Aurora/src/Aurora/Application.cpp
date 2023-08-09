@@ -3,11 +3,6 @@
 #include "Log.h"
 #include "Events/Event.h"
 #include "Input.h"
-#include "Platform/OpenGL/OpenGLShader.h"
-#include "Renderer/VertexBuffer.h"
-#include "Renderer/IndexBuffer.h"
-#include "Renderer/BufferLayout.h"
-#include "Renderer/Renderer.h"
 namespace Aurora
 {
 	Application* Application::s_pInstance = NULL;
@@ -20,53 +15,6 @@ namespace Aurora
 		m_isRunning = true;
 		m_pImguiLayer = new ImGuiLayer();
 		PushOverlay(m_pImguiLayer);
-
-		float vertices[3 * 7] = {
-			-0.5f,-0.5f,0.0f,1.0f,0.0f,0.0f,1.0f,
-			0.5f,-0.5f,0.0f,0.0f,1.0f,0.0f,1.0f,
-			0.0f,0.5f,0.0f,0.0f,0.0f,1.0f,1.0f
-		};
-
-		BufferLayout layout({ {ShaderDataType::Float3,"a_pos"},{ShaderDataType::Float4,"a_color"}});
-
-		unsigned int indices[3] = {
-			0,1,2
-		};
-
-		std::shared_ptr<IndexBuffer> indexBuffer;
-		std::shared_ptr<VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)));
-		vertexBuffer->SetLayout(layout);
-
-		m_vertexArray.reset(VertexArray::Create());
-		m_vertexArray->AddVertexBuffer(vertexBuffer);
-		m_vertexArray->SetIndexBuffer(indexBuffer);
-
-		std::string vs = R"(
-				#version 330 core
-				layout(location = 0) in vec3 a_pos;
-				layout(location =1) in vec4 a_color;
-				out vec3 v_pos;
-				out vec4 v_color;
-				void main()
-				{
-					v_pos=a_pos;
-					v_color= a_color;
-					gl_Position=vec4(a_pos,1.0);
-				}
-			)";
-		std::string fs = R"(
-				#version 330 core
-				layout(location = 0) out vec4 color;
-				in vec3 v_pos;
-				in vec4 v_color;
-				void main()
-				{
-					color=v_color;
-				}
-			)";
-		m_shader.reset(new OpenGLShader(vs, fs));
 	}
 
 	Application::~Application()
@@ -109,11 +57,6 @@ namespace Aurora
 	{
 		while (m_isRunning)
 		{
-			m_shader->Bind();
-			Renderer::BeginScene();
-			Renderer::Submit(m_vertexArray);
-			Renderer::EndScene();
-
 			for (Layer* lyr : m_lyrStack)
 			{
 				lyr->OnUpdate();

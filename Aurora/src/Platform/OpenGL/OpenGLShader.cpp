@@ -2,6 +2,7 @@
 #include "OpenGLShader.h"
 #include "glad/glad.h"
 #include "Aurora/Log.h"
+#include "gtc/type_ptr.hpp"
 namespace Aurora
 {
 	unsigned int OpenGLShader::CreateShader(int type, const std::string& src)
@@ -76,5 +77,11 @@ namespace Aurora
 	void OpenGLShader::UnBind()const
 	{
 		glUseProgram(0);
+	}
+
+	void OpenGLShader::SetUniformMat4(const std::string&name,const glm::mat4&matrix)
+	{
+		GLint location=glGetUniformLocation(m_rendererID,name.c_str());
+		glUniformMatrix4fv(location,1,GL_FALSE,glm::value_ptr(matrix));
 	}
 }
