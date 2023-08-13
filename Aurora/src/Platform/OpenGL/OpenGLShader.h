@@ -1,17 +1,22 @@
 #pragma once
 
 #include "Aurora/Renderer/Shader.h"
+#include "glad/glad.h"
 
 namespace Aurora
 {
 	class AURORA_API OpenGLShader :public Shader
 	{
 	public:
-		OpenGLShader(const std::string& vs, const std::string& fs);
+		OpenGLShader(const std::string&name,const std::string& vs, const std::string& fs);
+		OpenGLShader(const std::string& path);
 		~OpenGLShader();
 	public:
 		void Bind()const override;
 		void UnBind()const override;
+		const std::string& GetName()const override {
+			return m_name;
+		}
 		void SetUniformMat4(const std::string& name, const glm::mat4& matrix)override;
 		void SetUniformMat3(const std::string& name, const glm::mat3& matrix)override;
 		void SetUniformFloat(const std::string& name, float value)override;
@@ -21,7 +26,10 @@ namespace Aurora
 		void SetUniformInt(const std::string& name, int value) override;
 	private:
 		static unsigned int CreateShader(int type, const std::string& src);
+		void CompileShader(const std::string& vs, const std::string& fs);
+		void CompileShader(std::unordered_map<GLenum,std::string>&shaderSources);
 	private:
 		unsigned int m_rendererID;
+		std::string  m_name;
 	};
 }

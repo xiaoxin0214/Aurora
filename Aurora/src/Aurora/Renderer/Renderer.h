@@ -14,6 +14,7 @@ namespace Aurora
 			return RendererAPI::GetCurrentAPI();
 		}
 
+		static void Init();
 		static void BeginScene(const OrthographicCamera& camera);
 		static void Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& modelMatrix);
 		static void EndScene();

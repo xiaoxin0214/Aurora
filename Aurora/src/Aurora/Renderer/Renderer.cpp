@@ -5,6 +5,11 @@ namespace Aurora
 {
 	Renderer::SceneData* Renderer::s_pSceneData = new SceneData();
 
+	void Renderer::Init()
+	{
+		RendererCommand::Init();
+	}
+
 	void Renderer::BeginScene(const OrthographicCamera& camera)
 	{
 		s_pSceneData->viewProjectionMatrix = camera.GetViewProjectionMatrix();

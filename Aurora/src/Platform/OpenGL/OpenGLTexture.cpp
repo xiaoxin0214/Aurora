@@ -14,14 +14,31 @@ namespace Aurora
 		stbi_uc* pData = stbi_load(path.c_str(), &width, &height, &channels, 0);
 		AURORA_CORE_ASSERT(pData, "加载图片({0})失败!", path.c_str());
 
+		GLenum internalFormat = 0;
+		GLenum dataFormat = 0;
+		if (channels == 4)
+		{
+			internalFormat = GL_RGBA8;
+			dataFormat = GL_RGBA;
+		}
+		else if (channels == 3)
+		{
+			internalFormat = GL_RGB8;
+			dataFormat = GL_RGB;
+		}
+		else
+		{
+			AURORA_CORE_ASSERT(false, "暂不支持的类型!");
+		}
+
 		m_width = width;
 		m_height = height;
 		m_texturePath = path;
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
-		glTextureStorage2D(m_textureID, 1, GL_RGB8, m_width, m_height);
+		glTextureStorage2D(m_textureID, 1, internalFormat, m_width, m_height);
 		glTextureParameteri(m_textureID,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 		glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, pData);
+		glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, dataFormat, GL_UNSIGNED_BYTE, pData);
 
 		stbi_image_free(pData);
 	}

@@ -15,7 +15,7 @@ IncludeDir["GLFW"]="Aurora/vendor/GLFW/include"
 IncludeDir["GLAD"]="Aurora/vendor/GLAD/include"
 IncludeDir["ImGui"]="Aurora/vendor/imgui"
 IncludeDir["GLM"]="Aurora/vendor/glm/glm"
-IncludeDir["stb_image"]="Aurora/vendor/stb_image"
+IncludeDir["stbimage"]="Aurora/vendor/stb_image"
 
 include "Aurora/vendor/GLFW"
 include "Aurora/vendor/GLAD"
@@ -52,7 +52,7 @@ project "Aurora"
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLM}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stbimage}"
 	}
 
 	links

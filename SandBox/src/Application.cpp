@@ -38,43 +38,15 @@ namespace Aurora
 			m_vertexArray->AddVertexBuffer(vertexBuffer);
 			m_vertexArray->SetIndexBuffer(indexBuffer);
 
-			std::string vs = R"(
-				#version 330 core
-				layout(location = 0) in vec3 a_pos;
-				layout(location =1)  in vec2 a_texcoord;
-				uniform mat4 u_viewProjection;
-				uniform mat4 u_modelMatrix;
-				out vec3 v_pos;
-				out vec2 v_texcoord;
-				void main()
-				{
-					v_pos=a_pos;
-					v_texcoord=a_texcoord;
-					gl_Position=u_modelMatrix*u_viewProjection*vec4(a_pos,1.0);
-				}
-			)";
-			std::string fs = R"(
-				#version 330 core
-				layout(location = 0) out vec4 color;
-				uniform vec3 u_color;
-				uniform sampler2D u_texture;
-				in vec3 v_pos;
-				in vec2 v_texcoord;
-				void main()
-				{
-					color=texture(u_texture,v_texcoord);
-					//color*=vec4(u_color,1.0);
-				}
-			)";
-			m_shader.reset(Shader::Create(vs, fs));
+			m_shader = m_shaderLibrary.LoadShader("asset\\shaders\\test.glsl");
 			m_texture = Texture2D::Create("asset\\textures\\test.jpeg");
+			m_transparentTexture = Texture2D::Create("asset\\textures\\transparent.png");
 		}
 
 		void OnUpdate(Timestep& timestep)override {
 			//AURORA_TRACE("ExampleLayer::OnUpdate");
 
 			float ts = timestep;
-			AURORA_CORE_TRACE("timestep:{0}", timestep.GetMilliSeconds());
 			// 在updata中做而不是在事件中做，在事件中做移动不够丝滑
 			if (Input::IsKeyPressed(AURORA_KEY_A))
 			{
@@ -105,6 +77,11 @@ namespace Aurora
 			glm::vec3 position(0.0f);
 			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0), position);
 			Renderer::Submit(m_vertexArray, m_shader, modelMatrix);
+
+			m_transparentTexture->Bind(0);
+			m_shader->SetUniformInt("u_texture", 0);
+			Renderer::Submit(m_vertexArray, m_shader, modelMatrix);
+
 			Renderer::EndScene();
 		}
 
@@ -128,7 +105,9 @@ namespace Aurora
 	private:
 		Ref<VertexArray> m_vertexArray;
 		Ref<Shader> m_shader;
+		ShaderLibrary           m_shaderLibrary;
 		Ref<Texture2D>          m_texture;
+		Ref<Texture2D>          m_transparentTexture;
 		OrthographicCamera      m_camera;
 		glm::vec3               m_color;
 		glm::vec3               m_cameraPosition;

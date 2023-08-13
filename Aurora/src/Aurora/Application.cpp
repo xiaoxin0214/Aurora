@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "GLFW/glfw3.h"
 #include "Core/Timestep.h"
+#include "Renderer/Renderer.h"
 namespace Aurora
 {
 	Application* Application::s_pInstance = NULL;
@@ -17,6 +18,7 @@ namespace Aurora
 		m_isRunning = true;
 		m_lastFrameTime = 0.0f;
 		m_pImguiLayer = new ImGuiLayer();
+		Renderer::Init();
 		PushOverlay(m_pImguiLayer);
 	}
 
