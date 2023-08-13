@@ -111,6 +111,7 @@ project "SandBox"
 	{
 		"Aurora/vendor/spdlog/include",
 		"%{IncludeDir.GLM}",
+		"%{IncludeDir.ImGui}",
 		"Aurora/src "
 	}
 

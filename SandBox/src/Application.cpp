@@ -1,26 +1,30 @@
 
 #include "Aurora.h"
-
+#include "gtc/matrix_transform.hpp"
+#include "gtc/type_ptr.hpp"
+#include "imgui.h"
 namespace Aurora
 {
 	class ExampleLayer :public Aurora::Layer {
 	public:
-		ExampleLayer() :Layer("Example"), m_camera(-1.6f, 1.6f, -0.9f, 0.9f),m_cameraPosition(glm::vec3(0.0))
+		ExampleLayer() :Layer("Example"), m_camera(-1.6f, 1.6f, -0.9f, 0.9f),m_cameraPosition(glm::vec3(0.0)), m_cameraMoveSpeed(0.1f)
 		{
-			float vertices[3 * 7] = {
-		-0.5f,-0.5f,0.0f,1.0f,0.0f,0.0f,1.0f,
-		0.5f,-0.5f,0.0f,0.0f,1.0f,0.0f,1.0f,
-		0.0f,0.5f,0.0f,0.0f,0.0f,1.0f,1.0f
+			m_color.x = 1.0f;
+
+			float vertices[3 * 3] = {
+		-0.5f,-0.5f,0.0f,
+		0.5f,-0.5f,0.0f,
+		0.0f,0.5f,0.0f
 			};
 
-			BufferLayout layout({ {ShaderDataType::Float3,"a_pos"},{ShaderDataType::Float4,"a_color"} });
+			BufferLayout layout({ {ShaderDataType::Float3,"a_pos"} });
 
 			unsigned int indices[3] = {
 				0,1,2
 			};
 
-			std::shared_ptr<IndexBuffer> indexBuffer;
-			std::shared_ptr<VertexBuffer> vertexBuffer;
+			Ref<IndexBuffer> indexBuffer;
+			Ref<VertexBuffer> vertexBuffer;
 			vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 			indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)));
 			vertexBuffer->SetLayout(layout);
@@ -32,56 +36,61 @@ namespace Aurora
 			std::string vs = R"(
 				#version 330 core
 				layout(location = 0) in vec3 a_pos;
-				layout(location =1) in vec4 a_color;
 				uniform mat4 u_viewProjection;
+				uniform mat4 u_modelMatrix;
 				out vec3 v_pos;
-				out vec4 v_color;
 				void main()
 				{
 					v_pos=a_pos;
-					v_color= a_color;
-					gl_Position=u_viewProjection*vec4(a_pos,1.0);
+					gl_Position=u_modelMatrix*u_viewProjection*vec4(a_pos,1.0);
 				}
 			)";
 			std::string fs = R"(
 				#version 330 core
 				layout(location = 0) out vec4 color;
+				uniform vec3 u_color;
 				in vec3 v_pos;
-				in vec4 v_color;
 				void main()
 				{
-					color=v_color;
+					color=vec4(u_color,1.0);
 				}
 			)";
 			m_shader.reset(Shader::Create(vs, fs));
 		}
 
-		void OnUpdate()override {
+		void OnUpdate(Timestep& timestep)override {
 			//AURORA_TRACE("ExampleLayer::OnUpdate");
 
+			float ts = timestep;
+			AURORA_CORE_TRACE("timestep:{0}", timestep.GetMilliSeconds());
 			// 在updata中做而不是在事件中做，在事件中做移动不够丝滑
 			if (Input::IsKeyPressed(AURORA_KEY_A))
 			{
-				m_cameraPosition.x += 0.1f;
+				m_cameraPosition.x += m_cameraMoveSpeed * ts;
 			}
 			else if (Input::IsKeyPressed(AURORA_KEY_W))
 			{
-				m_cameraPosition.y -= 0.1f;
+				m_cameraPosition.y -= m_cameraMoveSpeed * ts;
 			}
 			else if (Input::IsKeyPressed(AURORA_KEY_S))
 			{
-				m_cameraPosition.y += 0.1f;
+				m_cameraPosition.y += m_cameraMoveSpeed * ts;
 			}
 			else if (Input::IsKeyPressed(AURORA_KEY_D))
 			{
-				m_cameraPosition.x -= 0.1f;
+				m_cameraPosition.x -= m_cameraMoveSpeed * ts;
 			}
 
 			m_camera.SetPosition(m_cameraPosition);
 
+			m_shader->Bind();
+			m_shader->SetUniformFloat3("u_color",m_color);
+
 			RendererCommand::Clear();
 			Renderer::BeginScene(m_camera);
-			Renderer::Submit(m_vertexArray, m_shader);
+			glm::vec3 position(0.0f);
+			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0),position);
+			Renderer::Submit(m_vertexArray, m_shader,modelMatrix);
 			Renderer::EndScene();
 		}
 
@@ -90,16 +99,25 @@ namespace Aurora
 			EventDispatcher dispatcher(const_cast<Event&>(e));
 		}
 
+		void OnImGuiRender()override
+		{
+			ImGui::Begin("设置");
+			ImGui::ColorEdit3("颜色",glm::value_ptr(m_color));
+			ImGui::End();
+		}
+
 	private:
 		bool OnKeyPressedEvent(KeyPressedEvent&e)
 		{
 			return false;
 		}
 	private:
-		std::shared_ptr<VertexArray> m_vertexArray;
-		std::shared_ptr<Shader> m_shader;
+		Ref<VertexArray> m_vertexArray;
+		Ref<Shader> m_shader;
 		OrthographicCamera      m_camera;
+		glm::vec3               m_color;
 		glm::vec3               m_cameraPosition;
+		float                   m_cameraMoveSpeed;
 	};
 }
 

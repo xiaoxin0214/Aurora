@@ -6,7 +6,7 @@ namespace Aurora
 	class AURORA_API RendererCommand
 	{
 	public:
-		static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray)
 		{
 			s_pRendererAPI->DrawIndexed(vertexArray);
 		}

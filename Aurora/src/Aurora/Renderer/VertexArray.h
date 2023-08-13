@@ -12,9 +12,9 @@ namespace Aurora
 	public:
 		virtual void Bind()const = 0;
 		virtual void UnBind()const = 0;
-		virtual void AddVertexBuffer(std::shared_ptr<VertexBuffer>& vb) = 0;
-		virtual void SetIndexBuffer(std::shared_ptr<IndexBuffer>& ib) = 0;
-		virtual const std::shared_ptr<IndexBuffer>& GetIndexBuffer()const = 0;
+		virtual void AddVertexBuffer(Ref<VertexBuffer>& vb) = 0;
+		virtual void SetIndexBuffer(Ref<IndexBuffer>& ib) = 0;
+		virtual const Ref<IndexBuffer>& GetIndexBuffer()const = 0;
 	public:
 		static VertexArray* Create();
 	};

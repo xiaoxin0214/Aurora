@@ -4,6 +4,7 @@
 #include "Events/ApplicationEvent.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
+#include "Core/Timestep.h"
 namespace Aurora
 {
 	class AURORA_API Layer
@@ -14,7 +15,7 @@ namespace Aurora
 
 		virtual void OnAttach() {};
 		virtual void OnDetach() {};
-		virtual void OnUpdate() {};
+		virtual void OnUpdate(Timestep&timestep) {};
 		virtual void OnEvent(const Event& e) {};
 		virtual void OnImGuiRender() {};
 		inline const std::string& GetLayerName()const {

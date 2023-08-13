@@ -3,6 +3,8 @@
 #include "Log.h"
 #include "Events/Event.h"
 #include "Input.h"
+#include "GLFW/glfw3.h"
+#include "Core/Timestep.h"
 namespace Aurora
 {
 	Application* Application::s_pInstance = NULL;
@@ -10,9 +12,10 @@ namespace Aurora
 	{
 		AURORA_CORE_ASSERT(NULL == s_pInstance, "Application 已经初始化过了！");
 		s_pInstance = this;
-		m_pWindow = std::unique_ptr<Window>(Window::Create());
+		m_pWindow = Scope<Window>(Window::Create());
 		m_pWindow->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_isRunning = true;
+		m_lastFrameTime = 0.0f;
 		m_pImguiLayer = new ImGuiLayer();
 		PushOverlay(m_pImguiLayer);
 	}
@@ -57,9 +60,12 @@ namespace Aurora
 	{
 		while (m_isRunning)
 		{
+			float time = (float)glfwGetTime();
+			Timestep timestep(time-m_lastFrameTime);
+			m_lastFrameTime = time;
 			for (Layer* lyr : m_lyrStack)
 			{
-				lyr->OnUpdate();
+				lyr->OnUpdate(timestep);
 			}
 
 			m_pImguiLayer->Begin();

@@ -33,10 +33,11 @@ namespace Aurora
 		bool OnWindowCloseEvent(const WindowCloseEvent& e);
 	private:
 		static Application*              s_pInstance;
-		std::unique_ptr<Window>          m_pWindow;
+		Scope<Window>          m_pWindow;
 		ImGuiLayer*                      m_pImguiLayer;
 		bool                             m_isRunning;
 		LayerStack                       m_lyrStack;
+		float                            m_lastFrameTime;
 	};	
 
 	Application* CreateApplication();

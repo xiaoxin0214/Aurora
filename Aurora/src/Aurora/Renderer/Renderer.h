@@ -15,7 +15,7 @@ namespace Aurora
 		}
 
 		static void BeginScene(const OrthographicCamera&camera);
-		static void Submit(const std::shared_ptr<VertexArray>& vertexArray,const std::shared_ptr<Shader>&shader);
+		static void Submit(const Ref<VertexArray>& vertexArray,const Ref<Shader>&shader,const glm::mat4&modelMatrix);
 		static void EndScene();
 	private:
 		struct SceneData

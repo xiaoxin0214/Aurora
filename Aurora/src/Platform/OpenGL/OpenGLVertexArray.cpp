@@ -45,7 +45,7 @@ namespace Aurora
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer>& vb)
+	void OpenGLVertexArray::AddVertexBuffer(Ref<VertexBuffer>& vb)
 	{
 		AURORA_CORE_ASSERT(vb->GetLayout().GetElements().size(),"VertexBuffer Œ¥∂®“ÂLayout!")
 		Bind();
@@ -62,7 +62,7 @@ namespace Aurora
 		m_vertexBufferLst.push_back(vb);
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(std::shared_ptr<IndexBuffer>& ib)
+	void OpenGLVertexArray::SetIndexBuffer(Ref<IndexBuffer>& ib)
 	{
 		Bind();
 		ib->Bind();
