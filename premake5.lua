@@ -15,6 +15,7 @@ IncludeDir["GLFW"]="Aurora/vendor/GLFW/include"
 IncludeDir["GLAD"]="Aurora/vendor/GLAD/include"
 IncludeDir["ImGui"]="Aurora/vendor/imgui"
 IncludeDir["GLM"]="Aurora/vendor/glm/glm"
+IncludeDir["stb_image"]="Aurora/vendor/stb_image"
 
 include "Aurora/vendor/GLFW"
 include "Aurora/vendor/GLAD"
@@ -36,7 +37,11 @@ project "Aurora"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{prj.name}/vendor/stb_image/stb_image.h",
+		"%{prj.name}/vendor/stb_image/stb_image.cpp"
 	}
 
 	includedirs
@@ -46,7 +51,8 @@ project "Aurora"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.GLM}"
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	links

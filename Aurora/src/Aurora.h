@@ -10,6 +10,7 @@
 
 #include "Aurora/Renderer/RendererCommand.h"
 #include "Aurora/Renderer/Renderer.h"
+#include "Aurora/Renderer/Texture.h"
 
 
 #include "Aurora/EntryPoint.h"

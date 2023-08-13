@@ -5,7 +5,7 @@ namespace Aurora
 	class AURORA_API Timestep
 	{
 	public:
-		Timestep(float time):m_time(time)
+		Timestep(float time) :m_time(time)
 		{
 
 		}

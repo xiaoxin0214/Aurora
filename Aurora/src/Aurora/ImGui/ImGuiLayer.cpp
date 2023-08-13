@@ -42,7 +42,7 @@ namespace Aurora
 		}
 
 		// Setup Platform/Renderer backends
-		auto pWindow=static_cast<GLFWwindow*>(Application::GetInstance()->GetNativeWindow());
+		auto pWindow = static_cast<GLFWwindow*>(Application::GetInstance()->GetNativeWindow());
 		ImGui_ImplGlfw_InitForOpenGL(pWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
@@ -65,7 +65,7 @@ namespace Aurora
 	{
 		auto pWindow = Application::GetInstance()->GetWindow();
 		ImGuiIO& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2((float)pWindow->GetWidth(),(float)pWindow->GetHeight());
+		io.DisplaySize = ImVec2((float)pWindow->GetWidth(), (float)pWindow->GetHeight());
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -84,7 +84,7 @@ namespace Aurora
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		static bool show=true;
+		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
 	}
 

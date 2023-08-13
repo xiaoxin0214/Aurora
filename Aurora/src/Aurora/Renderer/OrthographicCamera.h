@@ -6,7 +6,7 @@ namespace Aurora
 	class AURORA_API OrthographicCamera
 	{
 	public:
-		OrthographicCamera(float left,float right,float bottom,float top);
+		OrthographicCamera(float left, float right, float bottom, float top);
 		~OrthographicCamera();
 
 		float GetRotation()const
@@ -34,7 +34,7 @@ namespace Aurora
 			return m_projMatrix;
 		}
 
-		void SetPosition(const glm::vec3&position)
+		void SetPosition(const glm::vec3& position)
 		{
 			m_position = position;
 			ReCalcViewMatrix();
