@@ -15,6 +15,7 @@ namespace Aurora
 		}
 
 		static void Init();
+		static void OnWindowResize(std::uint32_t width,std::uint32_t height);
 		static void BeginScene(const OrthographicCamera& camera);
 		static void Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& modelMatrix);
 		static void EndScene();

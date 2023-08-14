@@ -31,13 +31,16 @@ namespace Aurora
 		}
 	private:
 		bool OnWindowCloseEvent(const WindowCloseEvent& e);
+		bool OnWindowResizeEvent(const WindowResizeEvent&e);
 	private:
 		static Application*              s_pInstance;
 		Scope<Window>          m_pWindow;
 		ImGuiLayer*                      m_pImguiLayer;
 		bool                             m_isRunning;
+		bool                             m_minimized;
 		LayerStack                       m_lyrStack;
 		float                            m_lastFrameTime;
+
 	};	
 
 	Application* CreateApplication();

@@ -7,7 +7,7 @@ namespace Aurora
 {
 	class ExampleLayer :public Aurora::Layer {
 	public:
-		ExampleLayer() :Layer("Example"), m_camera(-1.0f, 1.0f, -1.0f, 1.0f), m_cameraPosition(glm::vec3(0.0)), m_cameraMoveSpeed(0.1f)
+		ExampleLayer() :Layer("Example"), m_cameraController(1960.0f / 1080.f)
 		{
 			m_color.x = 1.0f;
 
@@ -47,25 +47,7 @@ namespace Aurora
 			//AURORA_TRACE("ExampleLayer::OnUpdate");
 
 			float ts = timestep;
-			// 在updata中做而不是在事件中做，在事件中做移动不够丝滑
-			if (Input::IsKeyPressed(AURORA_KEY_A))
-			{
-				m_cameraPosition.x += m_cameraMoveSpeed * ts;
-			}
-			else if (Input::IsKeyPressed(AURORA_KEY_W))
-			{
-				m_cameraPosition.y -= m_cameraMoveSpeed * ts;
-			}
-			else if (Input::IsKeyPressed(AURORA_KEY_S))
-			{
-				m_cameraPosition.y += m_cameraMoveSpeed * ts;
-			}
-			else if (Input::IsKeyPressed(AURORA_KEY_D))
-			{
-				m_cameraPosition.x -= m_cameraMoveSpeed * ts;
-			}
-
-			m_camera.SetPosition(m_cameraPosition);
+			m_cameraController.OnUpdate(timestep);
 
 			m_shader->Bind();
 			m_texture->Bind(0);
@@ -73,7 +55,7 @@ namespace Aurora
 			m_shader->SetUniformInt("u_texture", 0);
 
 			RendererCommand::Clear();
-			Renderer::BeginScene(m_camera);
+			Renderer::BeginScene(m_cameraController.GetCamera());
 			glm::vec3 position(0.0f);
 			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0), position);
 			Renderer::Submit(m_vertexArray, m_shader, modelMatrix);
@@ -88,6 +70,7 @@ namespace Aurora
 		void OnEvent(const Aurora::Event& e)override
 		{
 			EventDispatcher dispatcher(const_cast<Event&>(e));
+			m_cameraController.OnEvent(e);
 		}
 
 		void OnImGuiRender()override
@@ -103,15 +86,13 @@ namespace Aurora
 			return false;
 		}
 	private:
-		Ref<VertexArray> m_vertexArray;
-		Ref<Shader> m_shader;
-		ShaderLibrary           m_shaderLibrary;
-		Ref<Texture2D>          m_texture;
-		Ref<Texture2D>          m_transparentTexture;
-		OrthographicCamera      m_camera;
-		glm::vec3               m_color;
-		glm::vec3               m_cameraPosition;
-		float                   m_cameraMoveSpeed;
+		Ref<VertexArray>                  m_vertexArray;
+		Ref<Shader>                       m_shader;
+		ShaderLibrary                     m_shaderLibrary;
+		Ref<Texture2D>                    m_texture;
+		Ref<Texture2D>                    m_transparentTexture;
+		OrthographicCameraController      m_cameraController;
+		glm::vec3                         m_color;
 	};
 }
 

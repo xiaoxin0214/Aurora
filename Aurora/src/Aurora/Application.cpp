@@ -16,6 +16,7 @@ namespace Aurora
 		m_pWindow = Scope<Window>(Window::Create());
 		m_pWindow->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_isRunning = true;
+		m_minimized = false;
 		m_lastFrameTime = 0.0f;
 		m_pImguiLayer = new ImGuiLayer();
 		Renderer::Init();
@@ -31,6 +32,7 @@ namespace Aurora
 	{
 		EventDispatcher dispatcher(const_cast<Event&>(e));
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
+		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResizeEvent));
 
 		for (auto iter = m_lyrStack.end(); iter != m_lyrStack.begin();)
 		{
@@ -58,16 +60,32 @@ namespace Aurora
 		return true;
 	}
 
+	bool Application::OnWindowResizeEvent(const WindowResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 && e.GetHeight() == 0)
+		{
+			m_minimized = true;
+			return false;
+		}
+		m_minimized = false;
+
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		return false;
+	}
+
 	void Application::Run()
 	{
 		while (m_isRunning)
 		{
 			float time = (float)glfwGetTime();
-			Timestep timestep(time-m_lastFrameTime);
+			Timestep timestep(time - m_lastFrameTime);
 			m_lastFrameTime = time;
-			for (Layer* lyr : m_lyrStack)
+			if (!m_minimized)
 			{
-				lyr->OnUpdate(timestep);
+				for (Layer* lyr : m_lyrStack)
+				{
+					lyr->OnUpdate(timestep);
+				}
 			}
 
 			m_pImguiLayer->Begin();

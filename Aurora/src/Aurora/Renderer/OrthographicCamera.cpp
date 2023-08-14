@@ -18,9 +18,15 @@ namespace Aurora
 
 	}
 
+	void OrthographicCamera::SetProjection(float left, float right, float bottom, float top)
+	{
+		m_projMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+		ReCalcViewMatrix();
+	}
+
 	void OrthographicCamera::ReCalcViewMatrix()
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0), m_position) * glm::rotate(glm::mat4(1.0), m_rotation, glm::vec3(0.0,0.0,1.0));
+		glm::mat4 transform = glm::translate(glm::mat4(1.0), m_position) * glm::rotate(glm::mat4(1.0), glm::radians(m_rotation), glm::vec3(0.0,0.0,1.0));
 		m_viewMatrix = glm::inverse(transform);
 
 		m_vpMatrix = m_projMatrix* m_viewMatrix;

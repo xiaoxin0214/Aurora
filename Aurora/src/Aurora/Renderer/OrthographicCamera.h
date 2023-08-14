@@ -9,6 +9,7 @@ namespace Aurora
 		OrthographicCamera(float left, float right, float bottom, float top);
 		~OrthographicCamera();
 
+		void SetProjection(float left, float right, float bottom, float top);
 		float GetRotation()const
 		{
 			return m_rotation;

@@ -10,6 +10,10 @@ namespace Aurora
 		{
 			s_pRendererAPI->Init();
 		}
+		static void SetViewport(std::uint32_t x, std::uint32_t y, std::uint32_t width, std::uint32_t height)
+		{
+			s_pRendererAPI->SetViewport(x,y,width,height);
+		}
 		static void DrawIndexed(const Ref<VertexArray>& vertexArray)
 		{
 			s_pRendererAPI->DrawIndexed(vertexArray);

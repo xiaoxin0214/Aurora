@@ -10,6 +10,11 @@ namespace Aurora
 		RendererCommand::Init();
 	}
 
+	void Renderer::OnWindowResize(std::uint32_t width, std::uint32_t height)
+	{
+		RendererCommand::SetViewport(0,0,width,height);
+	}
+
 	void Renderer::BeginScene(const OrthographicCamera& camera)
 	{
 		s_pSceneData->viewProjectionMatrix = camera.GetViewProjectionMatrix();

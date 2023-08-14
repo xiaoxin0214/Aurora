@@ -7,6 +7,7 @@
 #include "Aurora/KeyCodes.h"
 #include "Aurora/MouseButtonCodes.h"
 #include "Aurora/Input.h"
+#include "Aurora/OrthographicCameraController.h"
 
 #include "Aurora/Renderer/RendererCommand.h"
 #include "Aurora/Renderer/Renderer.h"
