@@ -1,6 +1,6 @@
 #pragma once
-#include "Aurora/Core.h"
-#include "Aurora/Layer.h"
+#include "Aurora/Core/Core.h"
+#include "Aurora/Core/Layer.h"
 namespace Aurora
 {
 	class AURORA_API ImGuiLayer :public Layer

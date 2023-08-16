@@ -1,5 +1,5 @@
 #pragma once
-#include "Aurora/Window.h"
+#include "Aurora/Core/Window.h"
 struct GLFWwindow;
 namespace Aurora
 {
@@ -46,7 +46,7 @@ namespace Aurora
 		};
 
 		WindowData          m_data;
-		GLFWwindow*         m_pWindow;
-		GraphicsContext*    m_pContext;
+		GLFWwindow* m_pWindow;
+		GraphicsContext* m_pContext;
 	};
 }

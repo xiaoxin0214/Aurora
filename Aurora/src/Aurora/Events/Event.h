@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Aurora/Core.h"
+#include "Aurora/Core/Core.h"
 namespace Aurora
 {
 	enum class EventType

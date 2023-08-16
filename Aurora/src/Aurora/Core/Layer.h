@@ -1,10 +1,10 @@
 #pragma once
 #include "Core.h"
-#include "Events/Event.h"
-#include "Events/ApplicationEvent.h"
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Core/Timestep.h"
+#include "Aurora/Events/Event.h"
+#include "Aurora/Events/ApplicationEvent.h"
+#include "Aurora/Events/KeyEvent.h"
+#include "Aurora/Events/MouseEvent.h"
+#include "Aurora/Core/Timestep.h"
 namespace Aurora
 {
 	class AURORA_API Layer

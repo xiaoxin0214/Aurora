@@ -5,7 +5,7 @@
 
 namespace Aurora
 {
-	VertexArray* VertexArray::Create()
+	Ref<VertexArray> VertexArray::Create()
 	{
 		if (RendererAPI::API::None == Renderer::GetCurrentAPI())
 		{
@@ -14,7 +14,7 @@ namespace Aurora
 		}
 		else if(RendererAPI::API::OpenGL==Renderer::GetCurrentAPI())
 		{
-			return new OpenGLVertexArray();
+			return  std::make_shared<OpenGLVertexArray>();
 		}
 
 		AURORA_CORE_ASSERT(false, "´íÎóµÄRendererAPI!");

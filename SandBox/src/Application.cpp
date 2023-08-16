@@ -7,40 +7,9 @@ namespace Aurora
 {
 	class ExampleLayer :public Aurora::Layer {
 	public:
-		ExampleLayer() :Layer("Example"), m_cameraController(1960.0f / 1080.f)
+		ExampleLayer() :Layer("Example"), m_cameraController(1960.0f / 1080.f),m_color(glm::vec4(1.0f,0.0f,0.0f,1.0f))
 		{
-			m_color.x = 1.0f;
-
-			float vertices[4 * 5] = {
-		-1.0f,-1.0f,0.0f,0.0f,0.0f,
-		1.0f,-1.0f,0.0f,1.0f,0.0f,
-		1.0f,1.0f,0.0f,1.0f,1.0f,
-		-1.0f,1.0f,0.0f,0.0f,1.0f
-
-			};
-
-			BufferLayout layout({
-				{ShaderDataType::Float3,"a_pos"},
-				{ShaderDataType::Float2,"a_texcoord"}
-				});
-
-			unsigned int indices[6] = {
-				0,1,2,2,3,0
-			};
-
-			Ref<IndexBuffer> indexBuffer;
-			Ref<VertexBuffer> vertexBuffer;
-			vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-			indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)));
-			vertexBuffer->SetLayout(layout);
-
-			m_vertexArray.reset(VertexArray::Create());
-			m_vertexArray->AddVertexBuffer(vertexBuffer);
-			m_vertexArray->SetIndexBuffer(indexBuffer);
-
-			m_shader = m_shaderLibrary.LoadShader("asset\\shaders\\test.glsl");
-			m_texture = Texture2D::Create("asset\\textures\\test.jpeg");
-			m_transparentTexture = Texture2D::Create("asset\\textures\\transparent.png");
+			m_texture = Texture2D::Create("asset\\textures\\transparent.png");
 		}
 
 		void OnUpdate(Timestep& timestep)override {
@@ -49,22 +18,13 @@ namespace Aurora
 			float ts = timestep;
 			m_cameraController.OnUpdate(timestep);
 
-			m_shader->Bind();
-			m_texture->Bind(0);
-			m_shader->SetUniformFloat3("u_color", m_color);
-			m_shader->SetUniformInt("u_texture", 0);
-
 			RendererCommand::Clear();
-			Renderer::BeginScene(m_cameraController.GetCamera());
-			glm::vec3 position(0.0f);
-			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0), position);
-			Renderer::Submit(m_vertexArray, m_shader, modelMatrix);
+			Renderer2D::BeginScene(m_cameraController.GetCamera());
 
-			m_transparentTexture->Bind(0);
-			m_shader->SetUniformInt("u_texture", 0);
-			Renderer::Submit(m_vertexArray, m_shader, modelMatrix);
+			Renderer2D::DrawQuad(glm::vec2(-1.0f,-1.0),glm::vec2(0.5f,0.5f),m_color);
 
-			Renderer::EndScene();
+			Renderer2D::DrawQuad(glm::vec2(0.0f), glm::vec2(1.0f), m_texture);
+			Renderer2D::EndScene();
 		}
 
 		void OnEvent(const Aurora::Event& e)override
@@ -75,8 +35,8 @@ namespace Aurora
 
 		void OnImGuiRender()override
 		{
-			ImGui::Begin("…Ë÷√");
-			ImGui::ColorEdit3("—’…´", glm::value_ptr(m_color));
+			ImGui::Begin("Settings");
+			ImGui::ColorEdit4("—’…´", glm::value_ptr(m_color));
 			ImGui::End();
 		}
 
@@ -86,13 +46,9 @@ namespace Aurora
 			return false;
 		}
 	private:
-		Ref<VertexArray>                  m_vertexArray;
-		Ref<Shader>                       m_shader;
-		ShaderLibrary                     m_shaderLibrary;
-		Ref<Texture2D>                    m_texture;
-		Ref<Texture2D>                    m_transparentTexture;
 		OrthographicCameraController      m_cameraController;
-		glm::vec3                         m_color;
+		Ref<Texture>                      m_texture;
+		glm::vec4                         m_color;
 	};
 }
 

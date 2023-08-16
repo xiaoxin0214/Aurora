@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "OrthographicCameraController.h"
-#include "Aurora/Input.h"
-#include "Aurora/KeyCodes.h"
+#include "Aurora/Core/Input.h"
+#include "Aurora/Core/KeyCodes.h"
 
 namespace Aurora
 {
-	OrthographicCameraController::OrthographicCameraController(float aspectRatio) :m_zoomLevel(1.0f), m_aspectRatio(aspectRatio), m_cameraMoveSpeed(1.0f), m_cameraPosition(glm::vec3(0.0f)), m_cameraRotation(0.0f), m_cameraRotationSpeed(180.0f), m_camera(-aspectRatio * m_zoomLevel, aspectRatio* m_zoomLevel, -m_zoomLevel, m_zoomLevel)
+	OrthographicCameraController::OrthographicCameraController(float aspectRatio) :m_zoomLevel(1.0f), m_aspectRatio(aspectRatio), m_cameraMoveSpeed(1.0f), m_cameraPosition(glm::vec3(0.0f)), m_cameraRotation(0.0f), m_cameraRotationSpeed(360.0f), m_camera(-aspectRatio * m_zoomLevel, aspectRatio* m_zoomLevel, -m_zoomLevel, m_zoomLevel)
 	{
 
 	}

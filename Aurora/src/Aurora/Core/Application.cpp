@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "Application.h"
 #include "Log.h"
-#include "Events/Event.h"
+#include "Aurora/Events/Event.h"
 #include "Input.h"
 #include "GLFW/glfw3.h"
-#include "Core/Timestep.h"
-#include "Renderer/Renderer.h"
+#include "Aurora/Core/Timestep.h"
+#include "Aurora/Renderer/Renderer.h"
 namespace Aurora
 {
 	Application* Application::s_pInstance = NULL;

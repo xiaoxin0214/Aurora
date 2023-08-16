@@ -1,5 +1,5 @@
 #pragma once
-#include "Aurora/Core.h"
+#include "Aurora/Core/Core.h"
 #include "RendererAPI.h"
 #include "Shader.h"
 #include "OrthographicCamera.h"

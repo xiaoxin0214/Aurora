@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "WindowsInput.h"
-#include "Aurora/Application.h"
+#include "Aurora/Core/Application.h"
 #include "GLFW/glfw3.h"
 namespace Aurora
 {

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ImGuiLayer.h"
-#include "Aurora/Application.h"
+#include "Aurora/Core/Application.h"
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
 #include "backends/imgui_impl_opengl3.h"

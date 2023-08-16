@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Core.h"
-#include "Events/Event.h"
+#include "Aurora/Events/Event.h"
 namespace Aurora
 {
 	struct WindowProps {

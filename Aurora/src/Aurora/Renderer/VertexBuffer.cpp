@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Renderer.h"
-#include "Aurora/Log.h"
+#include "Aurora/Core/Log.h"
 #include "VertexBuffer.h"
 #include "Platform/OpenGL/OpenGLVertexBuffer.h"
 namespace Aurora

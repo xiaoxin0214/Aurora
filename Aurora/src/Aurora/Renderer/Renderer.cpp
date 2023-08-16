@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "Renderer.h"
 #include "RendererCommand.h"
+#include "Renderer2D.h"
 namespace Aurora
 {
 	Renderer::SceneData* Renderer::s_pSceneData = new SceneData();
 
 	void Renderer::Init()
 	{
+		Renderer2D::Init();
 		RendererCommand::Init();
 	}
 

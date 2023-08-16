@@ -1,6 +1,6 @@
 #pragma once
-#include "Aurora/Core.h"
-#include "Aurora/Log.h"
+#include "Aurora/Core/Core.h"
+#include "Aurora/Core/Log.h"
 #include <vector>
 #include <string>
 namespace Aurora

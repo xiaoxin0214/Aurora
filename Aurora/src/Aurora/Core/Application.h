@@ -1,9 +1,9 @@
 #pragma once
 #include "Core.h"
 #include "Window.h"
-#include "Events/ApplicationEvent.h"
+#include "Aurora/Events/ApplicationEvent.h"
 #include "LayerStack.h"
-#include "ImGui/ImGuiLayer.h"
+#include "Aurora/ImGui/ImGuiLayer.h"
 namespace Aurora
 {
 	class AURORA_API Application

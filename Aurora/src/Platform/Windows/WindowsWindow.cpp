@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "WindowsWindow.h"
-#include "Aurora/Log.h"
+#include "Aurora/Core/Log.h"
 #include "Aurora/Events/ApplicationEvent.h"
 #include "Aurora/Events/KeyEvent.h"
 #include "Aurora/Events/MouseEvent.h"

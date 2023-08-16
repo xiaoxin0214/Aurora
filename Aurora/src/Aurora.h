@@ -1,17 +1,18 @@
 #pragma once
 
-#include "Aurora/Application.h"
-#include "Aurora/Log.h"
-#include "Aurora/Layer.h"	
+#include "Aurora/Core/Application.h"
+#include "Aurora/Core/Log.h"
+#include "Aurora/Core/Layer.h"	
 #include "Aurora/ImGui/ImGuiLayer.h"
-#include "Aurora/KeyCodes.h"
-#include "Aurora/MouseButtonCodes.h"
-#include "Aurora/Input.h"
-#include "Aurora/OrthographicCameraController.h"
+#include "Aurora/Core/KeyCodes.h"
+#include "Aurora/Core/MouseButtonCodes.h"
+#include "Aurora/Core/Input.h"
+#include "Aurora/Renderer/OrthographicCameraController.h"
 
 #include "Aurora/Renderer/RendererCommand.h"
 #include "Aurora/Renderer/Renderer.h"
+#include "Aurora/Renderer/Renderer2D.h"
 #include "Aurora/Renderer/Texture.h"
 
 
-#include "Aurora/EntryPoint.h"
+#include "Aurora/Core/EntryPoint.h"

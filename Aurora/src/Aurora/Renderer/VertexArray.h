@@ -1,5 +1,5 @@
 #pragma once
-#include "Aurora/Core.h"
+#include "Aurora/Core/Core.h"
 #include "Aurora/Renderer/VertexBuffer.h"
 #include "Aurora/Renderer/IndexBuffer.h"
 #include <memory.h>
@@ -16,6 +16,6 @@ namespace Aurora
 		virtual void SetIndexBuffer(Ref<IndexBuffer>& ib) = 0;
 		virtual const Ref<IndexBuffer>& GetIndexBuffer()const = 0;
 	public:
-		static VertexArray* Create();
+		static Ref<VertexArray> Create();
 	};
 }

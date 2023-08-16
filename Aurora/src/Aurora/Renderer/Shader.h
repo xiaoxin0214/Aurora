@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Aurora/Core.h"
+#include "Aurora/Core/Core.h"
 #include <string>
 #include "glm.hpp"
 namespace Aurora

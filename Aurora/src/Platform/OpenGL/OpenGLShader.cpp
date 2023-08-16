@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "OpenGLShader.h"
-#include "Aurora/Log.h"
+#include "Aurora/Core/Log.h"
 #include "gtc/type_ptr.hpp"
 namespace Aurora
 {

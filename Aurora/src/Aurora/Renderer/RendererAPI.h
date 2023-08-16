@@ -1,5 +1,5 @@
 #pragma once
-#include "Aurora/Core.h"
+#include "Aurora/Core/Core.h"
 #include "glm.hpp"
 #include <memory>
 #include "VertexArray.h"
