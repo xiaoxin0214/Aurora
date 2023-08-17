@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Shader.h"
-#include "Aurora/Core/Log.h"
 #include "RendererAPI.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 namespace Aurora

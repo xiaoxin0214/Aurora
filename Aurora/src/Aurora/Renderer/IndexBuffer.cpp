@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Renderer.h"
-#include "Aurora/Core/Log.h"
 #include "IndexBuffer.h"
 #include "Platform/OpenGL/OpenGLIndexBuffer.h"
 namespace Aurora

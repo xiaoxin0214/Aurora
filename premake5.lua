@@ -16,11 +16,12 @@ IncludeDir["GLAD"]="Aurora/vendor/GLAD/include"
 IncludeDir["ImGui"]="Aurora/vendor/imgui"
 IncludeDir["GLM"]="Aurora/vendor/glm/glm"
 IncludeDir["stbimage"]="Aurora/vendor/stb_image"
+IncludeDir["Optick"] = "Aurora/vendor/optick/src"
 
 include "Aurora/vendor/GLFW"
 include "Aurora/vendor/GLAD"
 include "Aurora/vendor/imgui"
-
+include "Aurora/vendor/optick"
 
 project "Aurora"
 	location "Aurora"
@@ -52,7 +53,8 @@ project "Aurora"
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLM}",
-		"%{IncludeDir.stbimage}"
+		"%{IncludeDir.stbimage}",
+		"%{IncludeDir.Optick}"
 	}
 
 	links
@@ -60,6 +62,7 @@ project "Aurora"
 		"GLFW",
 		"GLAD",
 		"ImGui",
+		"Optick",
 		"opengl32.lib"
 	}
 

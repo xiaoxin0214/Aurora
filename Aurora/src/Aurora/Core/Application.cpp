@@ -6,6 +6,7 @@
 #include "GLFW/glfw3.h"
 #include "Aurora/Core/Timestep.h"
 #include "Aurora/Renderer/Renderer.h"
+#include "Aurora/Debug/Profiler.h"
 namespace Aurora
 {
 	Application* Application::s_pInstance = NULL;
@@ -30,6 +31,7 @@ namespace Aurora
 
 	void Application::OnEvent(const Event& e)
 	{
+		AURORA_PROFILE_FUNC();
 		EventDispatcher dispatcher(const_cast<Event&>(e));
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
 		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResizeEvent));
@@ -77,6 +79,7 @@ namespace Aurora
 	{
 		while (m_isRunning)
 		{
+			AURORA_PROFILE_FRAME("MainThread");
 			float time = (float)glfwGetTime();
 			Timestep timestep(time - m_lastFrameTime);
 			m_lastFrameTime = time;

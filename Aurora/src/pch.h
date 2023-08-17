@@ -7,6 +7,9 @@
 
 #include <vector>
 
+#include "Aurora/Core/Log.h"
+
+
 #ifdef AURORA_PLATFORM_WINDOWS
 #include "windows.h"
 #endif

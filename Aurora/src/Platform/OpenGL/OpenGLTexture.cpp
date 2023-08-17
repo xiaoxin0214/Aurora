@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "Aurora/Core/Log.h"
 #include "OpenGLTexture.h"
 #include "stb_image.h"
 #include "glad/glad.h"

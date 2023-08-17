@@ -2,7 +2,6 @@
 #include "OpenGLContext.h"
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
-#include "Aurora/Core/Log.h"
 namespace Aurora
 {
 	OpenGLContext::OpenGLContext(GLFWwindow* pWindow) :m_pWindow(pWindow) {
