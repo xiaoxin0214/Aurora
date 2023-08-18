@@ -21,9 +21,9 @@ namespace Aurora
 			RendererCommand::Clear();
 			Renderer2D::BeginScene(m_cameraController.GetCamera());
 
-			Renderer2D::DrawQuad(glm::vec2(-1.0f,-1.0),glm::vec2(0.5f,0.5f),m_color);
+			//Renderer2D::DrawQuad(glm::vec2(0.0f,0.0f),glm::vec2(1.0f,1.0f),45.0f, m_color);
 
-			Renderer2D::DrawQuad(glm::vec2(0.0f), glm::vec2(1.0f), m_texture);
+			Renderer2D::DrawQuad(glm::vec2(0.0f), glm::vec2(1.0f),0.0, m_texture,glm::vec4(0.5f,1.0f,1.0f,1.0f));
 			Renderer2D::EndScene();
 		}
 

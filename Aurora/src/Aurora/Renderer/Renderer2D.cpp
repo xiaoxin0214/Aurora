@@ -68,26 +68,30 @@ namespace Aurora
 
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, float rotation, const glm::vec4& color)
 	{
 		s_pData->shader->Bind();
 		s_pData->vertexArray->Bind();
 		s_pData->shader->SetUniformFloat4("u_color", color);
 		s_pData->whiteTexture->Bind(0);
 		s_pData->shader->SetUniformInt("u_texture", 0);
-		glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
+		glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f))
+			* glm::rotate(glm::mat4(1.0), rotation, glm::vec3(0.0, 0.0, 1.0))
+			* glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
 		s_pData->shader->SetUniformMat4("u_modelMatrix", modelMatrix);
 		RendererCommand::DrawIndexed(s_pData->vertexArray);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Texture>& texture)
+	void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, float rotation, const Ref<Texture>& texture, const glm::vec4& tintColor)
 	{
 		s_pData->shader->Bind();
 		s_pData->vertexArray->Bind();
-		s_pData->shader->SetUniformFloat4("u_color", glm::vec4(1.0f));
+		s_pData->shader->SetUniformFloat4("u_color", tintColor);
 		texture->Bind(0);
 		s_pData->shader->SetUniformInt("u_texture", 0);
-		glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
+		glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f))
+			* glm::rotate(glm::mat4(1.0), rotation, glm::vec3(0.0f, 0.0f, 1.0f))
+			* glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
 		s_pData->shader->SetUniformMat4("u_modelMatrix", modelMatrix);
 		RendererCommand::DrawIndexed(s_pData->vertexArray);
 	}
