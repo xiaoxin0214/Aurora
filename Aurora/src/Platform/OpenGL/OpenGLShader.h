@@ -24,6 +24,7 @@ namespace Aurora
 		void SetUniformFloat3(const std::string& name, const glm::vec3& value)override;
 		void SetUniformFloat4(const std::string& name, const glm::vec4& value)override;
 		void SetUniformInt(const std::string& name, int value) override;
+		void SetUniformIntArray(const std::string& name, int* values, int count)override;
 	private:
 		static unsigned int CreateShader(int type, const std::string& src);
 		void CompileShader(const std::string& vs, const std::string& fs);

@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include <vector>
+#include <array>
 
 #include "Aurora/Core/Log.h"
 

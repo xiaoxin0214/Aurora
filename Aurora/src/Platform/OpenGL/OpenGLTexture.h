@@ -17,6 +17,10 @@ namespace Aurora
 			return m_height;
 		}
 		void Bind(std::uint32_t slot)const override;
+		bool operator ==(const Texture& rhs)const override
+		{
+			return m_textureID == ((OpenGLTexture2D&)rhs).m_textureID;
+		}
 	private:
 		std::uint32_t m_width;
 		std::uint32_t m_height;

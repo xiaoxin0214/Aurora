@@ -19,8 +19,11 @@ namespace Aurora
 		{
 			return m_layout;
 		}
+
+		virtual void SetData(const void*vertices,std::uint32_t size)=0;
 	public:
 		static VertexBuffer* Create(float* vertices, std::uint32_t size);
+		static VertexBuffer* Create(std::uint32_t size);
 	private:
 		BufferLayout           m_layout;
 	};

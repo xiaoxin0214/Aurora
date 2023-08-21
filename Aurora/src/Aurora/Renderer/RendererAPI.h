@@ -17,7 +17,7 @@ namespace Aurora {
 		virtual void SetViewport(std::uint32_t x, std::uint32_t y, std::uint32_t width, std::uint32_t height)=0;
 		virtual void SetClearColor(const glm::vec4& color) = 0;
 		virtual void Clear() = 0;
-		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray) = 0;
+		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray,std::uint32_t count = 0) = 0;
 		static API GetCurrentAPI()
 		{
 			return s_currentRendererAPI;

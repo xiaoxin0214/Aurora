@@ -48,19 +48,19 @@ namespace Aurora
 
 	static bool ReadFile(const std::string& path, std::string& content)
 	{
-		std::ifstream inFile(path,std::ios::in|std::ios::binary);
+		std::ifstream inFile(path, std::ios::in | std::ios::binary);
 		if (inFile)
 		{
-			inFile.seekg(0,std::ios::end);
+			inFile.seekg(0, std::ios::end);
 			content.resize(inFile.tellg());
-			inFile.seekg(0,std::ios::beg);
-			inFile.read(&content[0],content.size());
+			inFile.seekg(0, std::ios::beg);
+			inFile.read(&content[0], content.size());
 			inFile.close();
 			return true;
 		}
 		else
 		{
-			AURORA_CORE_WARN("文件{0}打开失败",path.c_str());
+			AURORA_CORE_WARN("文件{0}打开失败", path.c_str());
 			return false;
 		}
 	}
@@ -72,21 +72,21 @@ namespace Aurora
 		std::size_t pos = sourceCode.find(shaderTypeToken);
 		while (pos != std::string::npos)
 		{
-			std::size_t eol = sourceCode.find_first_of("\r\n",pos);
+			std::size_t eol = sourceCode.find_first_of("\r\n", pos);
 			AURORA_CORE_ASSERT(eol != std::string::npos, "语义错误!shadertype关键字后面必须指定着色器类型!");
 			std::size_t begin = pos + shaderTypeTokenLen + 1;
-			std::string shderType = sourceCode.substr(begin,eol-begin);
+			std::string shderType = sourceCode.substr(begin, eol - begin);
 			AURORA_CORE_ASSERT(ShaderTypeFromString(shderType), "暂不支持的着色器类型!");
-			std::size_t nextLinePos = sourceCode.find_first_not_of("\r\n",eol);
-			pos = sourceCode.find(shaderTypeToken,nextLinePos);
-			shaderSources[ShaderTypeFromString(shderType)] = sourceCode.substr(nextLinePos,pos-nextLinePos);
+			std::size_t nextLinePos = sourceCode.find_first_not_of("\r\n", eol);
+			pos = sourceCode.find(shaderTypeToken, nextLinePos);
+			shaderSources[ShaderTypeFromString(shderType)] = sourceCode.substr(nextLinePos, pos - nextLinePos);
 		}
 	}
 
 	void OpenGLShader::CompileShader(const std::string& vs, const std::string& fs)
 	{
 		std::unordered_map<GLenum, std::string> shaderSources;
-		shaderSources.emplace(GL_VERTEX_SHADER,vs);
+		shaderSources.emplace(GL_VERTEX_SHADER, vs);
 		shaderSources.emplace(GL_FRAGMENT_SHADER, fs);
 		CompileShader(shaderSources);
 	}
@@ -127,7 +127,7 @@ namespace Aurora
 
 		for (auto shaderID : shaderIDLst)
 		{
-			glDetachShader(program,shaderID);
+			glDetachShader(program, shaderID);
 		}
 
 		m_rendererID = program;
@@ -150,7 +150,7 @@ namespace Aurora
 
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vs, const std::string& fs)
 	{
-		CompileShader(vs,fs);
+		CompileShader(vs, fs);
 		m_name = name;
 	}
 
@@ -203,5 +203,10 @@ namespace Aurora
 	{
 		GLint location = glGetUniformLocation(m_rendererID, name.c_str());
 		glUniform1i(location, value);
+	}
+	void OpenGLShader::SetUniformIntArray(const std::string& name, int* values, int count)
+	{
+		GLint location = glGetUniformLocation(m_rendererID, name.c_str());
+		glUniform1iv(location, count, values);
 	}
 }

@@ -14,9 +14,9 @@ namespace Aurora
 		{
 			s_pRendererAPI->SetViewport(x,y,width,height);
 		}
-		static void DrawIndexed(const Ref<VertexArray>& vertexArray)
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray,std::uint32_t count=0)
 		{
-			s_pRendererAPI->DrawIndexed(vertexArray);
+			s_pRendererAPI->DrawIndexed(vertexArray, count);
 		}
 
 		static void SetClearColor(const glm::vec4& color) 

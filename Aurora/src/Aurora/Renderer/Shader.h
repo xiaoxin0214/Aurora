@@ -22,6 +22,7 @@ namespace Aurora
 		virtual void SetUniformFloat3(const std::string& name, const glm::vec3& value) = 0;
 		virtual void SetUniformFloat4(const std::string& name, const glm::vec4& value) = 0;
 		virtual void SetUniformInt(const std::string& name, int value) = 0;
+		virtual void SetUniformIntArray(const std::string& name, int* values, int count) = 0;
 		static Ref<Shader> Create(const std::string& name, const std::string& vs, const std::string& fs);
 		static Ref<Shader> Create(const std::string& path);
 	private:

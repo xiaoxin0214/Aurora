@@ -14,6 +14,7 @@ namespace Aurora
 		virtual std::uint32_t GetHeight()const = 0;
 		virtual void Bind(std::uint32_t slot)const =0;
 
+		virtual bool operator ==(const Texture& rhs)const = 0;
 	};
 	
 	class AURORA_API Texture2D :public Texture
