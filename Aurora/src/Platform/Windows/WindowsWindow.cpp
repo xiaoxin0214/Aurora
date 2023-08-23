@@ -114,6 +114,7 @@ namespace Aurora
 			WindowData* pData = (WindowData*)glfwGetWindowUserPointer(pWindow);
 			pData->callback(KeyTypedEvent(codepoint));
 			});
+
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

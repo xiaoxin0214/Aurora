@@ -45,6 +45,7 @@ namespace Aurora
 		auto pWindow = static_cast<GLFWwindow*>(Application::GetInstance()->GetNativeWindow());
 		ImGui_ImplGlfw_InitForOpenGL(pWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
+		io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\simfang.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
 	}
 
 	void ImGuiLayer::OnDetach()

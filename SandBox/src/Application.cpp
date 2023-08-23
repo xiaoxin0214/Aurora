@@ -7,24 +7,24 @@ namespace Aurora
 {
 	class ExampleLayer :public Aurora::Layer {
 	public:
-		ExampleLayer() :Layer("Example"), m_cameraController(1960.0f / 1080.f),m_color(glm::vec4(1.0f,0.0f,0.0f,1.0f))
+		ExampleLayer() :Layer("Example"), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f))
 		{
 			m_texture = Texture2D::Create("asset\\textures\\transparent.png");
 		}
 
 		void OnUpdate(Timestep& timestep)override {
 			//AURORA_TRACE("ExampleLayer::OnUpdate");
-
 			float ts = timestep;
 			m_cameraController.OnUpdate(timestep);
 
 			RendererCommand::Clear();
+			Renderer2D::ResetStatistics();
 			Renderer2D::BeginScene(m_cameraController.GetCamera());
 
-			Renderer2D::DrawQuad(glm::vec2(0.5f,0.0f),glm::vec2(0.5f,0.5f),0.0f, m_color);
-			Renderer2D::DrawQuad(glm::vec2(-0.5f, 0.0f), glm::vec2(0.5f, 0.5f), 0.0f, glm::vec4(1.0f,1.0f,0.0f,1.0f));
+			Renderer2D::DrawQuad(glm::vec3(0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 0.0f, m_color);
+			Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 45.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 
-			Renderer2D::DrawQuad(glm::vec2(-0.5f, 0.0f), glm::vec2(1.0f),0.0, m_texture,glm::vec4(1.0f,1.0f,1.0f,1.0f));
+			Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(1.0f), 0.0, m_texture, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 			Renderer2D::EndScene();
 		}
 
@@ -36,8 +36,12 @@ namespace Aurora
 
 		void OnImGuiRender()override
 		{
+			auto stats = Renderer2D::GetStatistics();
 			ImGui::Begin("Settings");
-			ImGui::ColorEdit4("颜色", glm::value_ptr(m_color));
+			ImGui::ColorEdit4(u8"颜色", glm::value_ptr(m_color));
+			ImGui::Text(u8"绘制信息:");
+			ImGui::Text(u8"渲染批次:%d", stats.drawCalls);
+			ImGui::Text(u8"矩形个数:%d", stats.quadCount);
 			ImGui::End();
 		}
 
