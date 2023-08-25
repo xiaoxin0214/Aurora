@@ -9,7 +9,8 @@ namespace Aurora
 	public:
 		ExampleLayer() :Layer("Example"), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f))
 		{
-			m_texture = Texture2D::Create("asset\\textures\\transparent.png");
+			//m_texture = Texture2D::Create("asset\\textures\\transparent.png");
+			m_texture = Texture2D::Create("asset\\textures\\tilemap_packed.png");
 		}
 
 		void OnUpdate(Timestep& timestep)override {
@@ -23,8 +24,16 @@ namespace Aurora
 
 			Renderer2D::DrawQuad(glm::vec3(0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 0.0f, m_color);
 			Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 45.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+			Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(1.0f), 0.0, SubTexture2D::CreateFromCoords(m_texture, glm::vec2(0.0f,1.0f), glm::vec2(48.0f,48.0f)), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-			Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(1.0f), 0.0, m_texture, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			//for (std::uint32_t x = 0; x < 10; ++x)
+			//{
+			//	for (std::uint32_t y = 0; y < 10; ++y)
+			//	{
+			//		Renderer2D::DrawQuad(glm::vec3(-0.5+0.11*x, -0.5 + 0.11 * y, 0.0f), glm::vec2(0.1f,0.1f), 0.0, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			//	}
+			//}
+
 			Renderer2D::EndScene();
 		}
 

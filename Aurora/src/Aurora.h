@@ -13,6 +13,7 @@
 #include "Aurora/Renderer/Renderer.h"
 #include "Aurora/Renderer/Renderer2D.h"
 #include "Aurora/Renderer/Texture.h"
+#include "Aurora/Renderer/SubTexture2D.h"
 
 
 #include "Aurora/Core/EntryPoint.h"

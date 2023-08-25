@@ -18,7 +18,7 @@ namespace Aurora
 
 	struct Renderer2DStorage
 	{
-		static const std::uint32_t maxQuadNum = 2;
+		static const std::uint32_t maxQuadNum = 10;
 		static const std::uint32_t maxVertexNum = maxQuadNum * 4;
 		static const std::uint32_t maxIndexNum = maxQuadNum * 6;
 		static const std::uint32_t maxTextureSlotNum = 32;
@@ -116,44 +116,16 @@ namespace Aurora
 
 	void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, const glm::vec4& color)
 	{
-		if (s_pData->indicesCount >= Renderer2DStorage::maxIndexNum)
-			FlushAndReset();
-
-		glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, pos.z))
-			* glm::rotate(glm::mat4(1.0), rotation, glm::vec3(0.0, 0.0, 1.0))
-			* glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
-		s_pData->shader->SetUniformMat4("u_modelMatrix", modelMatrix);
-
-		float whiteTextureIndex = 0.0f;
-		s_pData->pVertex->position = glm::vec3(modelMatrix * glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f));
-		s_pData->pVertex->color = color;
-		s_pData->pVertex->texCoord = glm::vec2(0.0f, 0.0f);
-		s_pData->pVertex->textureIndex = whiteTextureIndex;
-		s_pData->pVertex++;
-
-		s_pData->pVertex->position = glm::vec3(modelMatrix * glm::vec4(0.5f, -0.5f, 0.0f, 1.0f));
-		s_pData->pVertex->color = color;
-		s_pData->pVertex->texCoord = glm::vec2(1.0f, 0.0f);
-		s_pData->pVertex->textureIndex = whiteTextureIndex;
-		s_pData->pVertex++;
-
-		s_pData->pVertex->position = glm::vec3(modelMatrix * glm::vec4(0.5f, 0.5f, 0.0f, 1.0f));
-		s_pData->pVertex->color = color;
-		s_pData->pVertex->texCoord = glm::vec2(1.0f, 1.0f);
-		s_pData->pVertex->textureIndex = whiteTextureIndex;
-		s_pData->pVertex++;
-
-		s_pData->pVertex->position = glm::vec3(modelMatrix * glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f));
-		s_pData->pVertex->color = color;
-		s_pData->pVertex->texCoord = glm::vec2(0.0f, 1.0f);
-		s_pData->pVertex->textureIndex = whiteTextureIndex;
-		s_pData->pVertex++;
-
-		s_pData->indicesCount += 6;
-		s_pData->stats.quadCount++;
+		DrawQuad(pos,size,rotation,s_pData->whiteTexture,color);
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, const Ref<Texture>& texture, const glm::vec4& tintColor)
+	{
+		auto subTexture2D = SubTexture2D::Create(texture,glm::vec2(0.0f),glm::vec2(1.0f));
+		DrawQuad(pos, size, rotation, subTexture2D, tintColor);
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, const Ref<SubTexture2D>&subTexture, const glm::vec4& tintColor)
 	{
 		if (s_pData->indicesCount >= Renderer2DStorage::maxIndexNum)
 			FlushAndReset();
@@ -161,7 +133,7 @@ namespace Aurora
 		float textureIndex = 0.0f;
 		for (std::uint32_t i = 1; i < s_pData->textureSlotIndex; ++i)
 		{
-			if (*texture == *s_pData->textureSlots[i])
+			if (*(subTexture->GetTexture2D()) == *s_pData->textureSlots[i])
 			{
 				textureIndex = i;
 			}
@@ -169,7 +141,7 @@ namespace Aurora
 
 		if (0.0f == textureIndex)
 		{
-			s_pData->textureSlots[s_pData->textureSlotIndex] = texture;
+			s_pData->textureSlots[s_pData->textureSlotIndex] = subTexture->GetTexture2D();
 			textureIndex = s_pData->textureSlotIndex;
 			s_pData->textureSlotIndex++;
 		}
@@ -179,27 +151,28 @@ namespace Aurora
 			* glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
 		s_pData->shader->SetUniformMat4("u_modelMatrix", modelMatrix);
 
+		const glm::vec2* texCoords = subTexture->GetTextureCoords();
 		s_pData->pVertex->position = glm::vec3(modelMatrix * glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f));
 		s_pData->pVertex->color = tintColor;
-		s_pData->pVertex->texCoord = glm::vec2(0.0f, 0.0f);
+		s_pData->pVertex->texCoord = texCoords[0];
 		s_pData->pVertex->textureIndex = textureIndex;
 		s_pData->pVertex++;
 
 		s_pData->pVertex->position = glm::vec3(modelMatrix * glm::vec4(0.5f, -0.5f, 0.0f, 1.0f));
 		s_pData->pVertex->color = tintColor;
-		s_pData->pVertex->texCoord = glm::vec2(1.0f, 0.0f);
+		s_pData->pVertex->texCoord = texCoords[1];
 		s_pData->pVertex->textureIndex = textureIndex;
 		s_pData->pVertex++;
 
 		s_pData->pVertex->position = glm::vec3(modelMatrix * glm::vec4(0.5f, 0.5f, 0.0f, 1.0f));
 		s_pData->pVertex->color = tintColor;
-		s_pData->pVertex->texCoord = glm::vec2(1.0f, 1.0f);
+		s_pData->pVertex->texCoord = texCoords[2];
 		s_pData->pVertex->textureIndex = textureIndex;
 		s_pData->pVertex++;
 
 		s_pData->pVertex->position = glm::vec3(modelMatrix * glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f));
 		s_pData->pVertex->color = tintColor;
-		s_pData->pVertex->texCoord = glm::vec2(0.0f, 1.0f);
+		s_pData->pVertex->texCoord = texCoords[3];
 		s_pData->pVertex->textureIndex = textureIndex;
 		s_pData->pVertex++;
 
