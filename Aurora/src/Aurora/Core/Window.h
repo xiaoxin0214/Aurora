@@ -6,10 +6,14 @@ namespace Aurora
 {
 	struct WindowProps {
 		std::string title;
-		unsigned int width;
-		unsigned int height;
+		std::uint32_t width;
+		std::uint32_t height;
 
 		WindowProps() :title("Aurora"), width(1960), height(1080)
+		{
+		}
+
+		WindowProps(const std::string&name) :title(name), width(1960), height(1080)
 		{
 		}
 	};

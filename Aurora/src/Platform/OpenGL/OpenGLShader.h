@@ -30,7 +30,7 @@ namespace Aurora
 		void CompileShader(const std::string& vs, const std::string& fs);
 		void CompileShader(std::unordered_map<GLenum,std::string>&shaderSources);
 	private:
-		unsigned int m_rendererID;
+		std::uint32_t m_rendererID;
 		std::string  m_name;
 	};
 }

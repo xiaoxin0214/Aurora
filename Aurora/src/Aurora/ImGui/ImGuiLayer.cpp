@@ -85,8 +85,8 @@ namespace Aurora
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
+		//static bool show = true;
+		//ImGui::ShowDemoWindow(&show);
 	}
 
 }

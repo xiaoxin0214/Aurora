@@ -14,6 +14,6 @@ namespace Aurora
 		void UnBind()const override;
 		void SetData(const void*vertices,std::uint32_t size)override;
 	private:
-		unsigned int m_vertexBufferID;
+		std::uint32_t m_vertexBufferID;
 	};
 }

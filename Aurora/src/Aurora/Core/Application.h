@@ -9,7 +9,7 @@ namespace Aurora
 	class AURORA_API Application
 	{
 	public:
-		Application();
+		Application(const std::string&name);
 		~Application();
 	public:
 		void Run();

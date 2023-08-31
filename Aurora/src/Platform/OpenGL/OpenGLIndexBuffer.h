@@ -13,7 +13,7 @@ namespace Aurora
 		void UnBind()const override;
 		std::uint32_t GetCount()const override; 
 	private:
-		unsigned int m_indexBufferID;
+		std::uint32_t m_indexBufferID;
 		std::uint32_t m_count;
 	};
 }

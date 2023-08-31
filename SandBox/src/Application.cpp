@@ -3,6 +3,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "gtc/type_ptr.hpp"
 #include "imgui.h"
+#include "Aurora/Core/EntryPoint.h"
 namespace Aurora
 {
 	class ExampleLayer :public Aurora::Layer {
@@ -11,6 +12,11 @@ namespace Aurora
 		{
 			//m_texture = Texture2D::Create("asset\\textures\\transparent.png");
 			m_texture = Texture2D::Create("asset\\textures\\tilemap_packed.png");
+			FrameBufferProps props;
+			props.width = 1960;
+			props.height = 1080;
+			props.samples = 1;
+			m_frameBuffer = FrameBuffer::Create(props);
 		}
 
 		void OnUpdate(Timestep& timestep)override {
@@ -18,6 +24,7 @@ namespace Aurora
 			float ts = timestep;
 			m_cameraController.OnUpdate(timestep);
 
+			m_frameBuffer->Bind();
 			RendererCommand::Clear();
 			Renderer2D::ResetStatistics();
 			Renderer2D::BeginScene(m_cameraController.GetCamera());
@@ -35,6 +42,7 @@ namespace Aurora
 			//}
 
 			Renderer2D::EndScene();
+			m_frameBuffer->UnBind();
 		}
 
 		void OnEvent(const Aurora::Event& e)override
@@ -51,6 +59,9 @@ namespace Aurora
 			ImGui::Text(u8"绘制信息:");
 			ImGui::Text(u8"渲染批次:%d", stats.drawCalls);
 			ImGui::Text(u8"矩形个数:%d", stats.quadCount);
+
+			auto textureID = m_frameBuffer->GetColorAttachmentID();
+			ImGui::Image((void*)textureID, ImVec2(1960,1280));
 			ImGui::End();
 		}
 
@@ -62,6 +73,7 @@ namespace Aurora
 	private:
 		OrthographicCameraController      m_cameraController;
 		Ref<Texture>                      m_texture;
+		Ref<FrameBuffer>                  m_frameBuffer;
 		glm::vec4                         m_color;
 	};
 }
@@ -75,7 +87,7 @@ public:
 };
 
 
-Aurora::Application* Aurora::CreateApplication()
-{
-	return new SandBox();
-}
+//Aurora::Application* Aurora::CreateApplication()
+//{
+//	return new SandBox();
+//}

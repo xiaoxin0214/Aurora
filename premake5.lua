@@ -7,7 +7,7 @@ workspace "Aurora"
 		"Distribution"
 	}
 
-startproject "SandBox"
+startproject "Editor"
 
 outputdir="%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir={}
@@ -18,11 +18,13 @@ IncludeDir["GLM"]="Aurora/vendor/glm/glm"
 IncludeDir["stbimage"]="Aurora/vendor/stb_image"
 IncludeDir["Optick"] = "Aurora/vendor/optick/src"
 
+group "Dependencies"
 include "Aurora/vendor/GLFW"
 include "Aurora/vendor/GLAD"
 include "Aurora/vendor/imgui"
 include "Aurora/vendor/optick"
 
+group ""
 project "Aurora"
 	location "Aurora"
 	kind "StaticLib"
@@ -100,6 +102,65 @@ project "Aurora"
 		}
 		optimize "on"
 		runtime "Release"
+
+project "Editor"
+		location "Editor"
+		kind "ConsoleApp"
+		language "C++"
+		cppdialect "C++17"
+		staticruntime "on"
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	
+		files
+		{
+			"%{prj.name}/src/**.h",
+			"%{prj.name}/src/**.cpp"
+		}
+	
+		includedirs
+		{
+			"Aurora/vendor/spdlog/include",
+			"%{IncludeDir.GLM}",
+			"%{IncludeDir.ImGui}",
+			"Aurora/src "
+		}
+	
+		links
+		{
+			"Aurora"
+		}
+	
+		filter "system:windows"
+			systemversion "latest"
+			defines
+			{
+				"AURORA_PLATFORM_WINDOWS"
+			}
+	
+		filter "configurations:Debug"
+			defines
+			{
+				"AURORA_DEBUG"
+			}
+			symbols "On"
+			runtime "Debug"
+	
+		filter "configurations:Release"
+			defines
+			{
+				"AURORA_RELEASE"
+			}
+			optimize "On"
+			runtime "Release"
+	
+		filter "configurations:Distribution"
+			defines
+			{
+				"AURORA_DISTRIBUTION"
+			}
+			optimize "On"
+			runtime "Release"
 
 project "SandBox"
 	location "SandBox"

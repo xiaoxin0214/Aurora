@@ -10,11 +10,11 @@
 namespace Aurora
 {
 	Application* Application::s_pInstance = NULL;
-	Application::Application()
+	Application::Application(const std::string&name)
 	{
 		AURORA_CORE_ASSERT(NULL == s_pInstance, "Application 已经初始化过了！");
 		s_pInstance = this;
-		m_pWindow = Scope<Window>(Window::Create());
+		m_pWindow = Scope<Window>(Window::Create(WindowProps(name)));
 		m_pWindow->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_isRunning = true;
 		m_minimized = false;

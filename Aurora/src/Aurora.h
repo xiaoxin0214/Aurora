@@ -14,6 +14,4 @@
 #include "Aurora/Renderer/Renderer2D.h"
 #include "Aurora/Renderer/Texture.h"
 #include "Aurora/Renderer/SubTexture2D.h"
-
-
-#include "Aurora/Core/EntryPoint.h"
+#include "Aurora/Renderer/FrameBuffer.h"
