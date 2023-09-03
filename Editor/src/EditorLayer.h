@@ -10,7 +10,7 @@ namespace Aurora
 
 		void OnUpdate(Timestep& timestep)override;
 
-		void OnEvent(const Aurora::Event& e)override;
+		void OnEvent(Aurora::Event& e)override;
 
 		void OnImGuiRender()override;
 
@@ -25,5 +25,7 @@ namespace Aurora
 		Ref<FrameBuffer>                  m_frameBuffer;
 		glm::vec4                         m_color;
 		glm::vec2                         m_viewportSize;
+		bool                              m_viewportFocused;
+		bool                              m_viewportHovered;
 	};
 }

@@ -56,10 +56,15 @@ namespace Aurora
 		dispatcher.dispatch<MouseScrolledEvent>(BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
 	}
 
+	void OrthographicCameraController::OnResize(float width, float height)
+	{
+		m_aspectRatio = width / height;
+		m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+	}
+
 	bool OrthographicCameraController::OnWindowResize(const WindowResizeEvent& e)
 	{
-		m_aspectRatio = (e.GetWidth()*1.0f) / e.GetHeight();
-		m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+		OnResize(e.GetWidth(),e.GetHeight());
 		return false;
 	}
 

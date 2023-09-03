@@ -7,7 +7,7 @@
 #include "backends/imgui_impl_glfw.h"
 namespace Aurora
 {
-	ImGuiLayer::ImGuiLayer() :Layer("ImGuiLayer"), m_time(0.0f)
+	ImGuiLayer::ImGuiLayer() :Layer("ImGuiLayer"), m_time(0.0f),m_blockEvents(false)
 	{
 
 	}
@@ -80,6 +80,16 @@ namespace Aurora
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup_current_context);
+		}
+	}
+
+	void ImGuiLayer::OnEvent(Event&e)
+	{
+		if (m_blockEvents)
+		{
+			auto& io = ImGui::GetIO();
+			e.IsHandled |= e.IsInCategory(EventCategoryMouse) && io.WantCaptureMouse;
+			e.IsHandled |= e.IsInCategory(EventCategoryKeyboard) && io.WantCaptureKeyboard;
 		}
 	}
 

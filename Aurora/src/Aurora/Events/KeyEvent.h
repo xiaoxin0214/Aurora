@@ -10,7 +10,7 @@ namespace Aurora
 			return m_keyCode;
 		}
 
-		EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyborad)
+		EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyboard)
 	protected:
 		KeyEvent(int keyCode) :m_keyCode(keyCode)
 		{

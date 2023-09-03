@@ -17,7 +17,7 @@ namespace Aurora
 		None = 0,
 		EventCategoryApplication = BIT(0),
 		EventCategoryInput = BIT(1),
-		EventCategoryKeyborad = BIT(2),
+		EventCategoryKeyboard = BIT(2),
 		EventCategoryMouse = BIT(3),
 		EventCategoryMouseButton = BIT(4)
 	};
@@ -32,21 +32,18 @@ namespace Aurora
 	{
 		friend class EventDispatcher;
 	public:
-		Event() :m_isHandled(false) {}
+		Event() :IsHandled(false) {}
 	public:
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
 		virtual int GetCategoryFlags()const = 0;
 		virtual std::string ToString()const { return GetName(); }
-		inline bool IsInCategory(EventCategory category) {
+		inline bool IsInCategory(EventCategory category)const {
 			return GetCategoryFlags() & category;
 		}
 
-		inline bool IsHandled()const {
-			return m_isHandled;
-		}
-	protected:
-		bool m_isHandled;
+	public:
+		bool IsHandled;
 	};
 
 
@@ -64,7 +61,7 @@ namespace Aurora
 		{
 			if (m_event.GetEventType() == T::GetStaticType())
 			{
-				m_event.m_isHandled = func(*(T*)(&m_event));
+				m_event.IsHandled = func(*(T*)(&m_event));
 				return true;
 			}
 			return false;

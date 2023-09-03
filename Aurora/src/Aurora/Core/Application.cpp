@@ -29,7 +29,7 @@ namespace Aurora
 
 	}
 
-	void Application::OnEvent(const Event& e)
+	void Application::OnEvent(Event& e)
 	{
 		AURORA_PROFILE_FUNC();
 		EventDispatcher dispatcher(const_cast<Event&>(e));
@@ -39,7 +39,7 @@ namespace Aurora
 		for (auto iter = m_lyrStack.end(); iter != m_lyrStack.begin();)
 		{
 			(*--iter)->OnEvent(e);
-			if (e.IsHandled())
+			if (e.IsHandled)
 				break;
 		}
 	}

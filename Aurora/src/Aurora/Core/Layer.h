@@ -16,7 +16,7 @@ namespace Aurora
 		virtual void OnAttach() {};
 		virtual void OnDetach() {};
 		virtual void OnUpdate(Timestep&timestep) {};
-		virtual void OnEvent(const Event& e) {};
+		virtual void OnEvent(Event& e) {};
 		virtual void OnImGuiRender() {};
 		inline const std::string& GetLayerName()const {
 			return m_debugName;

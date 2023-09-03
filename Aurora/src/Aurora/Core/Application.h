@@ -13,7 +13,7 @@ namespace Aurora
 		~Application();
 	public:
 		void Run();
-		void OnEvent(const Event& e);
+		void OnEvent(Event& e);
 		void PushLayer(Layer* lyr);
 		void PushOverlay(Layer* overlay);
 		inline Window* GetWindow()
@@ -23,6 +23,11 @@ namespace Aurora
 
 		inline void* GetNativeWindow()const {
 			return m_pWindow->GetNativeWindow();
+		}
+
+		inline ImGuiLayer* GetImGuiLayer()
+		{
+			return m_pImguiLayer;
 		}
 
 		static Application* GetInstance()

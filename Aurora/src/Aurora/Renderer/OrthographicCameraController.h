@@ -15,6 +15,7 @@ namespace Aurora
 	public:
 		void OnUpdate(Timestep timestep);
 		void OnEvent(const Event& e);
+		void OnResize(float width,float height);
 
 		const OrthographicCamera& GetCamera()const
 		{

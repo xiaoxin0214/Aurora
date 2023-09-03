@@ -4,7 +4,7 @@
 #include "gtc/type_ptr.hpp"
 namespace Aurora
 {
-	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f))
+	EditorLayer::EditorLayer() :Layer("EditorLayer"),m_viewportSize(0.0,0.0), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false)
 	{
 		m_texture = Texture2D::Create("asset\\textures\\tilemap_packed.png");
 
@@ -22,7 +22,10 @@ namespace Aurora
 	void EditorLayer::OnUpdate(Timestep& timestep)
 	{
 		float ts = timestep;
-		m_cameraController.OnUpdate(timestep);
+		if (m_viewportFocused)
+		{
+			m_cameraController.OnUpdate(timestep);
+		}
 
 		Renderer2D::ResetStatistics();
 		m_frameBuffer->Bind();
@@ -46,9 +49,9 @@ namespace Aurora
 		m_frameBuffer->UnBind();
 	}
 
-	void EditorLayer::OnEvent(const Aurora::Event& e)
+	void EditorLayer::OnEvent(Aurora::Event& e)
 	{
-		EventDispatcher dispatcher(const_cast<Event&>(e));
+		EventDispatcher dispatcher(e);
 		m_cameraController.OnEvent(e);
 	}
 
@@ -94,12 +97,18 @@ namespace Aurora
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("viewport");
+		m_viewportFocused = ImGui::IsWindowFocused();
+		m_viewportHovered = ImGui::IsWindowHovered();
+
+		Application::GetInstance()->GetImGuiLayer()->BlockEvents(!m_viewportFocused||!m_viewportHovered);
+
 		auto region = ImGui::GetContentRegionAvail();
 		if (m_viewportSize.x != region.x && m_viewportSize.y != region.y)
 		{
 			m_frameBuffer->Resize((std::uint32_t)region.x, (std::uint32_t)region.y);
 			m_viewportSize.x = region.x;
 			m_viewportSize.y = region.y;
+			m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
 		}
 		auto textureID = m_frameBuffer->GetColorAttachmentID();
 		ImGui::Image((void*)textureID, ImVec2(m_viewportSize.x, m_viewportSize.y), ImVec2(0, 1), ImVec2(1, 0));

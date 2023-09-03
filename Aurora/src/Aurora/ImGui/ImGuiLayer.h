@@ -9,13 +9,19 @@ namespace Aurora
 		ImGuiLayer();
 		~ImGuiLayer();
 
+		void BlockEvents(bool block)
+		{
+			m_blockEvents = block;
+		}
 		void OnDetach()override;
 		void OnAttach()override;
 
 		void Begin();
 		void OnImGuiRender()override;
+		void OnEvent(Event&e)override;
 		void End();
 	private:
 		float m_time;
+		bool  m_blockEvents;
 	};
 }
