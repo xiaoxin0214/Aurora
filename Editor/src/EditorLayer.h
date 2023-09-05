@@ -23,6 +23,7 @@ namespace Aurora
 		OrthographicCameraController      m_cameraController;
 		Ref<Texture>                      m_texture;
 		Ref<FrameBuffer>                  m_frameBuffer;
+		Ref<Scene>                        m_scene;
 		glm::vec4                         m_color;
 		glm::vec2                         m_viewportSize;
 		bool                              m_viewportFocused;

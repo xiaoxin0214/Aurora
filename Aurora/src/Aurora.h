@@ -15,3 +15,5 @@
 #include "Aurora/Renderer/Texture.h"
 #include "Aurora/Renderer/SubTexture2D.h"
 #include "Aurora/Renderer/FrameBuffer.h"
+#include "Aurora/Scene/Entity.h"
+#include "Aurora/Scene/Scene.h"

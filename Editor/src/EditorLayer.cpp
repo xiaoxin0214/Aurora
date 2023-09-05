@@ -17,6 +17,8 @@ namespace Aurora
 		props.height = 1080;
 		props.samples = 1;
 		m_frameBuffer = FrameBuffer::Create(props);
+		m_scene = CreateRef<Scene>();
+		auto square = m_scene->CreateEntity("square");
 	}
 
 	void EditorLayer::OnUpdate(Timestep& timestep)
@@ -32,10 +34,11 @@ namespace Aurora
 		RendererCommand::Clear();
 
 		Renderer2D::BeginScene(m_cameraController.GetCamera());
+		m_scene->OnUpdate(ts);
 
-		Renderer2D::DrawQuad(glm::vec3(0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 0.0f, m_color);
-		Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 45.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-		Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(1.0f), 0.0, SubTexture2D::CreateFromCoords(m_texture, glm::vec2(0.0f, 1.0f), glm::vec2(48.0f, 48.0f)), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		//Renderer2D::DrawQuad(glm::vec3(0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 0.0f, m_color);
+		//Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 45.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+		//Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(1.0f), 0.0, SubTexture2D::CreateFromCoords(m_texture, glm::vec2(0.0f, 1.0f), glm::vec2(48.0f, 48.0f)), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 		//for (std::uint32_t x = 0; x < 10; ++x)
 		//{

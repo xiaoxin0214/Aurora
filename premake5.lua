@@ -17,6 +17,8 @@ IncludeDir["ImGui"]="Aurora/vendor/imgui"
 IncludeDir["GLM"]="Aurora/vendor/glm/glm"
 IncludeDir["stbimage"]="Aurora/vendor/stb_image"
 IncludeDir["Optick"] = "Aurora/vendor/optick/src"
+IncludeDir["entt"] = "Aurora/vendor/entt"
+
 
 group "Dependencies"
 include "Aurora/vendor/GLFW"
@@ -56,7 +58,8 @@ project "Aurora"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.stbimage}",
-		"%{IncludeDir.Optick}"
+		"%{IncludeDir.Optick}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -123,6 +126,7 @@ project "Editor"
 			"Aurora/vendor/spdlog/include",
 			"%{IncludeDir.GLM}",
 			"%{IncludeDir.ImGui}",
+			"%{IncludeDir.entt}",
 			"Aurora/src "
 		}
 	
@@ -182,6 +186,7 @@ project "SandBox"
 		"Aurora/vendor/spdlog/include",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.entt}",
 		"Aurora/src "
 	}
 
