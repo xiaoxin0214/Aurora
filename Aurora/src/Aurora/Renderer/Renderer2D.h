@@ -1,5 +1,6 @@
 #pragma once
 #include "Aurora/Core/Core.h"
+#include "Aurora/Renderer/Camera.h"
 #include "Aurora/Renderer/OrthographicCamera.h"
 #include "Texture.h"
 #include "Aurora/Renderer/SubTexture2D.h"
@@ -31,6 +32,7 @@ namespace Aurora
 	public:
 		static void Init();
 		static void Shutdown();
+		static void BeginScene(const Camera& camera, const glm::mat4& transform);
 		static void BeginScene(const OrthographicCamera& camera);
 		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
 		static void DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subTexture, const glm::vec4& tintColor);

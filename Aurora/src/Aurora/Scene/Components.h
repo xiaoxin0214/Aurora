@@ -1,5 +1,6 @@
 #pragma once
 #include "glm.hpp"
+#include "SceneCamera.h"
 namespace Aurora
 {
 	struct TagComponent
@@ -33,5 +34,25 @@ namespace Aurora
 			return transform;
 		}
 
+	};
+
+	struct MeshComponent {
+		glm::vec4 color;
+		MeshComponent(const glm::vec4& colorIn):color(colorIn)
+		{
+
+		}
+	};
+
+	struct CameraComponent
+	{
+		SceneCamera camera;
+		bool   isFixedAspectRatio;
+		bool   isMainCamera;
+
+		CameraComponent() :isFixedAspectRatio(false), isMainCamera(true)
+		{
+
+		}
 	};
 }

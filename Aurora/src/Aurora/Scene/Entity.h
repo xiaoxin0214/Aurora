@@ -7,7 +7,9 @@ namespace Aurora
 	class AURORA_API Entity
 	{
 	public:
+		Entity();
 		Entity(entt::entity handle, Scene* pScene);
+		~Entity();
 		template<typename T>
 		void HasComponent()
 		{

@@ -24,6 +24,7 @@ namespace Aurora
 		Ref<Texture>                      m_texture;
 		Ref<FrameBuffer>                  m_frameBuffer;
 		Ref<Scene>                        m_scene;
+		Entity                            m_cameraEntity;
 		glm::vec4                         m_color;
 		glm::vec2                         m_viewportSize;
 		bool                              m_viewportFocused;

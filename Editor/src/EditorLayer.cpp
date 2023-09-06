@@ -7,7 +7,6 @@ namespace Aurora
 	EditorLayer::EditorLayer() :Layer("EditorLayer"),m_viewportSize(0.0,0.0), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false)
 	{
 		m_texture = Texture2D::Create("asset\\textures\\tilemap_packed.png");
-
 	}
 
 	void EditorLayer::OnAttach()
@@ -19,6 +18,9 @@ namespace Aurora
 		m_frameBuffer = FrameBuffer::Create(props);
 		m_scene = CreateRef<Scene>();
 		auto square = m_scene->CreateEntity("square");
+		square.AddComponent<MeshComponent>(glm::vec4(1.0f,0.0f,0.0f,1.0f));
+		m_cameraEntity = m_scene->CreateEntity("camera");
+		m_cameraEntity.AddComponent<CameraComponent>();
 	}
 
 	void EditorLayer::OnUpdate(Timestep& timestep)
@@ -33,7 +35,7 @@ namespace Aurora
 		m_frameBuffer->Bind();
 		RendererCommand::Clear();
 
-		Renderer2D::BeginScene(m_cameraController.GetCamera());
+		//Renderer2D::BeginScene(m_cameraController.GetCamera());
 		m_scene->OnUpdate(ts);
 
 		//Renderer2D::DrawQuad(glm::vec3(0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 0.0f, m_color);
@@ -48,7 +50,7 @@ namespace Aurora
 		//	}
 		//}
 
-		Renderer2D::EndScene();
+		//Renderer2D::EndScene();
 		m_frameBuffer->UnBind();
 	}
 
@@ -96,7 +98,10 @@ namespace Aurora
 		ImGui::Text(u8"绘制信息:");
 		ImGui::Text(u8"渲染批次:%d", stats.drawCalls);
 		ImGui::Text(u8"矩形个数:%d", stats.quadCount);
+		ImGui::DragFloat3("Camera Transform:", glm::value_ptr(m_cameraEntity.GetComponent<TransformComponent>().transform[3]));
+
 		ImGui::End();
+
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("viewport");
@@ -112,6 +117,7 @@ namespace Aurora
 			m_viewportSize.x = region.x;
 			m_viewportSize.y = region.y;
 			m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
+			m_scene->OnViewportResize(m_viewportSize.x, m_viewportSize.y);
 		}
 		auto textureID = m_frameBuffer->GetColorAttachmentID();
 		ImGui::Image((void*)textureID, ImVec2(m_viewportSize.x, m_viewportSize.y), ImVec2(0, 1), ImVec2(1, 0));

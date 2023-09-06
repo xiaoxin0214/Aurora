@@ -99,6 +99,16 @@ namespace Aurora
 		s_pData = NULL;
 	}
 
+	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		glm::mat4 viewProjectionMatrix = camera.GetProjection() * glm::inverse(transform);
+		s_pData->shader->Bind();
+		s_pData->shader->SetUniformMat4("u_viewProjection", viewProjectionMatrix);
+		s_pData->pVertex = s_pData->pVertexBase;
+		s_pData->indicesCount = 0;
+		s_pData->textureSlotIndex = 1;
+	}
+
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
 		s_pData->shader->Bind();

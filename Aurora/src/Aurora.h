@@ -17,3 +17,4 @@
 #include "Aurora/Renderer/FrameBuffer.h"
 #include "Aurora/Scene/Entity.h"
 #include "Aurora/Scene/Scene.h"
+#include "Aurora/Scene/Components.h"
