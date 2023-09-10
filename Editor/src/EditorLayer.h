@@ -1,5 +1,6 @@
 #pragma once
 #include "Aurora.h"
+#include "SceneHierarchyPanel.h"
 namespace Aurora
 {
 	class EditorLayer :public Layer {
@@ -24,6 +25,7 @@ namespace Aurora
 		Ref<Texture>                      m_texture;
 		Ref<FrameBuffer>                  m_frameBuffer;
 		Ref<Scene>                        m_scene;
+		SceneHierarchyPanel               m_sceneHierarchyPanel;
 		Entity                            m_cameraEntity;
 		glm::vec4                         m_color;
 		glm::vec2                         m_viewportSize;

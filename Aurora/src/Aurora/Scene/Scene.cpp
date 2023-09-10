@@ -25,6 +25,23 @@ namespace Aurora
 
 	void Scene::OnUpdate(Timestep ts)
 	{
+
+		{
+			auto& scriptGroup = m_registry.view<NativeScriptComponent>();
+			for (auto& entity : scriptGroup)
+			{
+				auto& scriptComponent = scriptGroup.get<NativeScriptComponent>(entity);
+				if (!scriptComponent.pEntity)
+				{
+					scriptComponent.InstantiateScript();
+					scriptComponent.pEntity->m_entity = Entity(entity,this);
+					scriptComponent.pEntity->OnCreate();
+				}
+
+				scriptComponent.pEntity->OnUpdate(ts);
+			}
+		}
+
 		Camera* pCamera = NULL;
 		glm::mat4 cameraTransform;
 		{

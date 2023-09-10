@@ -6,6 +6,4 @@
 *.vcxproj.user
 *.sln
 
-imgui.ini
-
 !vendor/bin

@@ -1,6 +1,8 @@
 #pragma once
 #include "glm.hpp"
+#include "Aurora/Core/Timestep.h"
 #include "SceneCamera.h"
+#include "ScriptableEntity.h"
 namespace Aurora
 {
 	struct TagComponent
@@ -11,6 +13,7 @@ namespace Aurora
 
 		}
 	};
+
 	struct TransformComponent
 	{
 		glm::mat4 transform;
@@ -53,6 +56,32 @@ namespace Aurora
 		CameraComponent() :isFixedAspectRatio(false), isMainCamera(true)
 		{
 
+		}
+	};
+
+	struct NativeScriptComponent
+	{
+		ScriptableEntity* pEntity;
+
+		NativeScriptComponent() :pEntity(NULL)
+		{
+
+		}
+
+		std::function<void()>   InstantiateScript;
+		std::function<void()>   DestroyScript;
+
+		template<typename T>
+		void Bind()
+		{
+			InstantiateScript = [&]() {
+				pEntity = new T();
+			};
+
+			DestroyScript = [&]() {
+				delete pEntity;
+				pEntity = NULL;
+			};
 		}
 	};
 }

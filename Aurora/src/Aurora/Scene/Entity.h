@@ -10,10 +10,11 @@ namespace Aurora
 		Entity();
 		Entity(entt::entity handle, Scene* pScene);
 		~Entity();
+
 		template<typename T>
-		void HasComponent()
+		bool HasComponent()
 		{
-			return m_pScene->m_registry.has<T>(m_handle);
+			return m_pScene->m_registry.try_get<T>(m_handle)!=nullptr;
 		}
 
 		template<typename T, typename ...Args>
@@ -32,6 +33,21 @@ namespace Aurora
 		void RemoveComponent()
 		{
 			m_pScene->m_registry.remove<T>(m_handle);
+		}
+
+		std::uint32_t GetID()const
+		{
+			return (std::uint32_t)m_handle;
+		}
+
+		bool operator==(const Entity& rhs)const
+		{
+			return m_handle == rhs.m_handle && m_pScene == rhs.m_pScene;;
+		}
+
+		operator bool()const
+		{
+			return !(m_handle == entt::null);
 		}
 	private:
 		entt::entity m_handle;

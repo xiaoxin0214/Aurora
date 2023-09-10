@@ -4,7 +4,7 @@
 
 class EditorApp :public Aurora::Application {
 public:
-	EditorApp():Application("Editor")
+	EditorApp() :Application("Editor")
 	{
 		PushLayer(new Aurora::EditorLayer());
 	}

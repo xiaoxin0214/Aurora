@@ -4,7 +4,7 @@
 #include "gtc/type_ptr.hpp"
 namespace Aurora
 {
-	EditorLayer::EditorLayer() :Layer("EditorLayer"),m_viewportSize(0.0,0.0), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false)
+	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_viewportSize(0.0, 0.0), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false)
 	{
 		m_texture = Texture2D::Create("asset\\textures\\tilemap_packed.png");
 	}
@@ -18,9 +18,50 @@ namespace Aurora
 		m_frameBuffer = FrameBuffer::Create(props);
 		m_scene = CreateRef<Scene>();
 		auto square = m_scene->CreateEntity("square");
-		square.AddComponent<MeshComponent>(glm::vec4(1.0f,0.0f,0.0f,1.0f));
+		square.AddComponent<MeshComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		m_cameraEntity = m_scene->CreateEntity("camera");
 		m_cameraEntity.AddComponent<CameraComponent>();
+
+		class CameraController :public ScriptableEntity
+		{
+		private:
+			float              m_cameraMoveSpeed;
+		public:
+			void OnCreate() override
+			{
+				m_cameraMoveSpeed = 5.0f;
+				AURORA_INFO("CameraController OnCreate");
+			}
+
+			void OnDestroy() override
+			{
+			}
+
+			void OnUpdate(Timestep ts) override
+			{
+				auto& transformComponent = GetComponent<TransformComponent>();
+				// 在updata中做而不是在事件中做，在事件中做移动不够丝滑
+				if (Input::IsKeyPressed(AURORA_KEY_A))
+				{
+					transformComponent.transform[3][0] += m_cameraMoveSpeed * ts;
+				}
+				else if (Input::IsKeyPressed(AURORA_KEY_W))
+				{
+					transformComponent.transform[3][1] -= m_cameraMoveSpeed * ts;
+				}
+				else if (Input::IsKeyPressed(AURORA_KEY_S))
+				{
+					transformComponent.transform[3][1] += m_cameraMoveSpeed * ts;
+				}
+				else if (Input::IsKeyPressed(AURORA_KEY_D))
+				{
+					transformComponent.transform[3][0] -= m_cameraMoveSpeed * ts;
+				}
+			}
+		};
+
+		m_cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		m_sceneHierarchyPanel.SetContext(m_scene);
 	}
 
 	void EditorLayer::OnUpdate(Timestep& timestep)
@@ -35,22 +76,8 @@ namespace Aurora
 		m_frameBuffer->Bind();
 		RendererCommand::Clear();
 
-		//Renderer2D::BeginScene(m_cameraController.GetCamera());
 		m_scene->OnUpdate(ts);
 
-		//Renderer2D::DrawQuad(glm::vec3(0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 0.0f, m_color);
-		//Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(0.5f, 0.5f), 45.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-		//Renderer2D::DrawQuad(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec2(1.0f), 0.0, SubTexture2D::CreateFromCoords(m_texture, glm::vec2(0.0f, 1.0f), glm::vec2(48.0f, 48.0f)), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-
-		//for (std::uint32_t x = 0; x < 10; ++x)
-		//{
-		//	for (std::uint32_t y = 0; y < 10; ++y)
-		//	{
-		//		Renderer2D::DrawQuad(glm::vec3(-0.5+0.11*x, -0.5 + 0.11 * y, 0.0f), glm::vec2(0.1f,0.1f), 0.0, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		//	}
-		//}
-
-		//Renderer2D::EndScene();
 		m_frameBuffer->UnBind();
 	}
 
@@ -92,13 +119,14 @@ namespace Aurora
 		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
+		m_sceneHierarchyPanel.OnImGuiRender();
+
 		auto stats = Renderer2D::GetStatistics();
 
 		ImGui::Begin("stats");
 		ImGui::Text(u8"绘制信息:");
 		ImGui::Text(u8"渲染批次:%d", stats.drawCalls);
 		ImGui::Text(u8"矩形个数:%d", stats.quadCount);
-		ImGui::DragFloat3("Camera Transform:", glm::value_ptr(m_cameraEntity.GetComponent<TransformComponent>().transform[3]));
 
 		ImGui::End();
 
@@ -108,7 +136,7 @@ namespace Aurora
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
 
-		Application::GetInstance()->GetImGuiLayer()->BlockEvents(!m_viewportFocused||!m_viewportHovered);
+		Application::GetInstance()->GetImGuiLayer()->BlockEvents(!m_viewportFocused || !m_viewportHovered);
 
 		auto region = ImGui::GetContentRegionAvail();
 		if (m_viewportSize.x != region.x && m_viewportSize.y != region.y)
