@@ -12,3 +12,6 @@
 	path = Aurora/vendor/imgui
 	url = https://github.com/xiaoxin0214/imgui.git
 	branch = docking
+[submodule "Aurora/vendor/yaml-cpp"]
+	path = Aurora/vendor/yaml-cpp
+	url = https://github.com/xiaoxin0214/yaml-cpp.git

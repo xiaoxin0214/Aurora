@@ -41,6 +41,10 @@ namespace Aurora
 
 	struct MeshComponent {
 		glm::vec4 color;
+		MeshComponent() :color(glm::vec4(1.0f,0.0f,0.0f,1.0f))
+		{
+
+		}
 		MeshComponent(const glm::vec4& colorIn) :color(colorIn)
 		{
 

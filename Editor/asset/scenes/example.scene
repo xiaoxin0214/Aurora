@@ -1,0 +1,38 @@
+Scene: Untitled
+Entities:
+  - Entity: 2
+    TagComponent:
+      Tag: redsquare
+    TransformComponent:
+      Position: [2.5999999, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      Color: [1, 0, 0, 1]
+  - Entity: 1
+    TagComponent:
+      Tag: pinksquare
+    TransformComponent:
+      Position: [0.600000024, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      Color: [0.898257315, 0.247104228, 1, 1]
+  - Entity: 0
+    TagComponent:
+      Tag: maincamera
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00100000005
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      IsMainCamera: true
+      IsFixedAspectRatio: false

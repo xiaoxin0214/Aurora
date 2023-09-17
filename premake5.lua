@@ -18,6 +18,7 @@ IncludeDir["GLM"]="Aurora/vendor/glm/glm"
 IncludeDir["stbimage"]="Aurora/vendor/stb_image"
 IncludeDir["Optick"] = "Aurora/vendor/optick/src"
 IncludeDir["entt"] = "Aurora/vendor/entt"
+IncludeDir["Yaml"] = "Aurora/vendor/yaml-cpp/include"
 
 
 group "Dependencies"
@@ -25,6 +26,7 @@ include "Aurora/vendor/GLFW"
 include "Aurora/vendor/GLAD"
 include "Aurora/vendor/imgui"
 include "Aurora/vendor/optick"
+include "Aurora/vendor/yaml-cpp"
 
 group ""
 project "Aurora"
@@ -59,7 +61,8 @@ project "Aurora"
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.stbimage}",
 		"%{IncludeDir.Optick}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.Yaml}"
 	}
 
 	links
@@ -68,6 +71,7 @@ project "Aurora"
 		"GLAD",
 		"ImGui",
 		"Optick",
+		"Yaml",
 		"opengl32.lib"
 	}
 
@@ -78,6 +82,7 @@ project "Aurora"
 			"AURORA_PLATFORM_WINDOWS",
 			"AURORA_BUILD_DLL",
 			"GLFW_INCLUDE_NONE",
+			"YAML_CPP_STATIC_DEFINE",
 			"_CRT_SECURE_NO_WARNINGS"
 		}
 

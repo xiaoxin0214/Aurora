@@ -4,6 +4,45 @@
 #include "gtc/type_ptr.hpp"
 namespace Aurora
 {
+	class CameraController :public ScriptableEntity
+	{
+	private:
+		float              m_cameraMoveSpeed;
+	public:
+		void OnCreate() override
+		{
+			m_cameraMoveSpeed = 5.0f;
+			AURORA_INFO("CameraController OnCreate");
+		}
+
+		void OnDestroy() override
+		{
+		}
+
+		void OnUpdate(Timestep ts) override
+		{
+			auto& transformComponent = GetComponent<TransformComponent>();
+			// 在updata中做而不是在事件中做，在事件中做移动不够丝滑
+			if (Input::IsKeyPressed(AURORA_KEY_A))
+			{
+
+				transformComponent.position.x += m_cameraMoveSpeed * ts;
+			}
+			else if (Input::IsKeyPressed(AURORA_KEY_W))
+			{
+				transformComponent.position.y -= m_cameraMoveSpeed * ts;
+			}
+			else if (Input::IsKeyPressed(AURORA_KEY_S))
+			{
+				transformComponent.position.y += m_cameraMoveSpeed * ts;
+			}
+			else if (Input::IsKeyPressed(AURORA_KEY_D))
+			{
+				transformComponent.position.x -= m_cameraMoveSpeed * ts;
+			}
+		}
+	};
+
 	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_viewportSize(0.0, 0.0), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false)
 	{
 		m_texture = Texture2D::Create("asset\\textures\\tilemap_packed.png");
@@ -17,52 +56,10 @@ namespace Aurora
 		props.samples = 1;
 		m_frameBuffer = FrameBuffer::Create(props);
 		m_scene = CreateRef<Scene>();
-		auto square = m_scene->CreateEntity("square");
-		square.AddComponent<MeshComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		m_cameraEntity = m_scene->CreateEntity("camera");
-		m_cameraEntity.AddComponent<CameraComponent>();
 
-		class CameraController :public ScriptableEntity
-		{
-		private:
-			float              m_cameraMoveSpeed;
-		public:
-			void OnCreate() override
-			{
-				m_cameraMoveSpeed = 5.0f;
-				AURORA_INFO("CameraController OnCreate");
-			}
-
-			void OnDestroy() override
-			{
-			}
-
-			void OnUpdate(Timestep ts) override
-			{
-				auto& transformComponent = GetComponent<TransformComponent>();
-				// 在updata中做而不是在事件中做，在事件中做移动不够丝滑
-				if (Input::IsKeyPressed(AURORA_KEY_A))
-				{
-
-					transformComponent.position.x += m_cameraMoveSpeed * ts;
-				}
-				else if (Input::IsKeyPressed(AURORA_KEY_W))
-				{
-					transformComponent.position.y -= m_cameraMoveSpeed * ts;
-				}
-				else if (Input::IsKeyPressed(AURORA_KEY_S))
-				{
-					transformComponent.position.y += m_cameraMoveSpeed * ts;
-				}
-				else if (Input::IsKeyPressed(AURORA_KEY_D))
-				{
-					transformComponent.position.x -= m_cameraMoveSpeed * ts;
-				}
-			}
-		};
-
-		m_cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		//m_cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_sceneHierarchyPanel.SetContext(m_scene);
+
 	}
 
 	void EditorLayer::OnUpdate(Timestep& timestep)
@@ -119,6 +116,27 @@ namespace Aurora
 		// Submit the DockSpace
 		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu(u8"文件"))
+			{
+				if (ImGui::MenuItem(u8"打开"))
+				{
+					SceneSerializer sceneSerializer(m_scene);
+					sceneSerializer.Deserialize("asset\\scenes\\example.scene");
+				}
+
+				if (ImGui::MenuItem(u8"保存"))
+				{
+					SceneSerializer sceneSerializer(m_scene);
+					sceneSerializer.Serialize("asset\\scenes\\example.scene");
+				}
+
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
 
 		m_sceneHierarchyPanel.OnImGuiRender();
 
