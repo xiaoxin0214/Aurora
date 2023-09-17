@@ -53,7 +53,7 @@ namespace Aurora
 			{ShaderDataType::Float,"a_texIndex"}
 			});
 
-		s_pData->vertexBuffer.reset(VertexBuffer::Create(s_pData->maxVertexNum*sizeof(Vertex)));
+		s_pData->vertexBuffer.reset(VertexBuffer::Create(s_pData->maxVertexNum * sizeof(Vertex)));
 
 		s_pData->pVertexBase = s_pData->pVertex = new Vertex[s_pData->maxVertexNum];
 
@@ -178,7 +178,7 @@ namespace Aurora
 
 	void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, const glm::vec4& color)
 	{
-		DrawQuad(pos,size,rotation,s_pData->whiteTexture,color);
+		DrawQuad(pos, size, rotation, s_pData->whiteTexture, color);
 	}
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
@@ -189,11 +189,11 @@ namespace Aurora
 
 	void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, const Ref<Texture>& texture, const glm::vec4& tintColor)
 	{
-		auto subTexture2D = SubTexture2D::Create(texture,glm::vec2(0.0f),glm::vec2(1.0f));
+		auto subTexture2D = SubTexture2D::Create(texture, glm::vec2(0.0f), glm::vec2(1.0f));
 		DrawQuad(pos, size, rotation, subTexture2D, tintColor);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, const Ref<SubTexture2D>&subTexture, const glm::vec4& tintColor)
+	void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subTexture, const glm::vec4& tintColor)
 	{
 		glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, pos.z))
 			* glm::rotate(glm::mat4(1.0), rotation, glm::vec3(0.0, 0.0, 1.0))
@@ -204,6 +204,9 @@ namespace Aurora
 
 	void Renderer2D::Flush()
 	{
+		if (s_pData->indicesCount < 1)
+			return;
+
 		for (std::uint32_t i = 0; i < s_pData->textureSlotIndex; ++i)
 		{
 			s_pData->textureSlots[i]->Bind(i);

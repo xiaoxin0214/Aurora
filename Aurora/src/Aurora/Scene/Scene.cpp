@@ -23,6 +23,11 @@ namespace Aurora
 		return entity;
 	}
 
+	void Scene::DestroyEntity(Entity entity)
+	{
+		m_registry.destroy(entity);
+	}
+
 	void Scene::OnUpdate(Timestep ts)
 	{
 
@@ -34,7 +39,7 @@ namespace Aurora
 				if (!scriptComponent.pEntity)
 				{
 					scriptComponent.InstantiateScript();
-					scriptComponent.pEntity->m_entity = Entity(entity,this);
+					scriptComponent.pEntity->m_entity = Entity(entity, this);
 					scriptComponent.pEntity->OnCreate();
 				}
 
@@ -45,23 +50,23 @@ namespace Aurora
 		Camera* pCamera = NULL;
 		glm::mat4 cameraTransform;
 		{
-			auto& group = m_registry.view<TransformComponent,CameraComponent>();
+			auto& group = m_registry.view<TransformComponent, CameraComponent>();
 			for (auto& entity : group)
 			{
 				auto& camera = group.get<CameraComponent>(entity);
 				if (camera.isMainCamera)
 				{
 					pCamera = &camera.camera;
-					cameraTransform = group.get<TransformComponent>(entity).transform;
+					cameraTransform = group.get<TransformComponent>(entity);
 					break;
 				}
 			}
 		}
 
-		if (pCamera!=NULL)
+		if (pCamera != NULL)
 		{
-			Renderer2D::BeginScene(*pCamera,cameraTransform);
-			auto& group = m_registry.group<TransformComponent,MeshComponent>();
+			Renderer2D::BeginScene(*pCamera, cameraTransform);
+			auto& group = m_registry.group<TransformComponent, MeshComponent>();
 			for (auto& entity : group)
 			{
 				auto& transform = group.get<TransformComponent>(entity);
@@ -85,5 +90,36 @@ namespace Aurora
 				camera.camera.SetViewportSize(width, height);
 			}
 		}
+	}
+	template<typename T>
+	void Scene::OnComponentAdded(T& component, Entity entity)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded(TagComponent& component, Entity entity)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded(MeshComponent& component, Entity entity)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded(TransformComponent& component, Entity entity)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded(NativeScriptComponent& component, Entity entity)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded(CameraComponent& component, Entity entity)
+	{
+		component.camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
 	}
 }

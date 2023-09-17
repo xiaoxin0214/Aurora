@@ -1,5 +1,6 @@
 #pragma once
 #include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 #include "Aurora/Core/Timestep.h"
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
@@ -16,32 +17,31 @@ namespace Aurora
 
 	struct TransformComponent
 	{
-		glm::mat4 transform;
-		TransformComponent(const glm::mat4& transformIn) :transform(transformIn)
+		glm::vec3 position;
+		glm::vec3 rotation;
+		glm::vec3 scale;
+		TransformComponent(const glm::vec3& translation) :position(translation), rotation(glm::vec3(0.0f, 0.0f, 0.0f)), scale(glm::vec3(1.0f, 1.0f, 1.0f))
 		{
 
 		}
 
-		TransformComponent()
+		TransformComponent() :position(glm::vec3(0.0f, 0.0f, 0.0f)), rotation(glm::vec3(0.0f, 0.0f, 0.0f)), scale(glm::vec3(1.0f, 1.0f, 1.0f))
 		{
 
 		}
 
-		operator const glm::mat4& () const
+		operator glm::mat4() const
 		{
-			return transform;
+			glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f))
+				* glm::rotate(glm::mat4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))
+				* glm::rotate(glm::mat4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+			return glm::translate(glm::mat4(1.0f), position) * rotationMatrix * glm::scale(glm::mat4(1.0f), scale);
 		}
-
-		operator glm::mat4& ()
-		{
-			return transform;
-		}
-
 	};
 
 	struct MeshComponent {
 		glm::vec4 color;
-		MeshComponent(const glm::vec4& colorIn):color(colorIn)
+		MeshComponent(const glm::vec4& colorIn) :color(colorIn)
 		{
 
 		}

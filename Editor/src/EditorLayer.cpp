@@ -43,19 +43,20 @@ namespace Aurora
 				// 在updata中做而不是在事件中做，在事件中做移动不够丝滑
 				if (Input::IsKeyPressed(AURORA_KEY_A))
 				{
-					transformComponent.transform[3][0] += m_cameraMoveSpeed * ts;
+
+					transformComponent.position.x += m_cameraMoveSpeed * ts;
 				}
 				else if (Input::IsKeyPressed(AURORA_KEY_W))
 				{
-					transformComponent.transform[3][1] -= m_cameraMoveSpeed * ts;
+					transformComponent.position.y -= m_cameraMoveSpeed * ts;
 				}
 				else if (Input::IsKeyPressed(AURORA_KEY_S))
 				{
-					transformComponent.transform[3][1] += m_cameraMoveSpeed * ts;
+					transformComponent.position.y += m_cameraMoveSpeed * ts;
 				}
 				else if (Input::IsKeyPressed(AURORA_KEY_D))
 				{
-					transformComponent.transform[3][0] -= m_cameraMoveSpeed * ts;
+					transformComponent.position.x -= m_cameraMoveSpeed * ts;
 				}
 			}
 		};
@@ -139,7 +140,7 @@ namespace Aurora
 		Application::GetInstance()->GetImGuiLayer()->BlockEvents(!m_viewportFocused || !m_viewportHovered);
 
 		auto region = ImGui::GetContentRegionAvail();
-		if (m_viewportSize.x != region.x && m_viewportSize.y != region.y)
+		if (m_viewportSize.x != region.x || m_viewportSize.y != region.y)
 		{
 			m_frameBuffer->Resize((std::uint32_t)region.x, (std::uint32_t)region.y);
 			m_viewportSize.x = region.x;

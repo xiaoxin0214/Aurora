@@ -20,7 +20,9 @@ namespace Aurora
 		template<typename T, typename ...Args>
 		T& AddComponent(Args&&...args)
 		{
-			return m_pScene->m_registry.emplace<T>(m_handle, std::forward<Args>(args)...);
+			T&component= m_pScene->m_registry.emplace<T>(m_handle, std::forward<Args>(args)...);
+			m_pScene->OnComponentAdded<T>(component,*this);
+			return component;
 		}
 
 		template<typename T>
@@ -48,6 +50,11 @@ namespace Aurora
 		operator bool()const
 		{
 			return !(m_handle == entt::null);
+		}
+
+		operator entt::entity()const
+		{
+			return m_handle;
 		}
 	private:
 		entt::entity m_handle;
