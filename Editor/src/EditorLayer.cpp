@@ -79,10 +79,75 @@ namespace Aurora
 		m_frameBuffer->UnBind();
 	}
 
+	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+	{
+		if (e.GetRepeatCount() > 0)
+			return false;
+
+		bool isCtrlPressed = Input::IsKeyPressed(AURORA_KEY_LEFT_CONTROL)|| Input::IsKeyPressed(AURORA_KEY_RIGHT_CONTROL);
+		bool isShiftPressed = Input::IsKeyPressed(AURORA_KEY_LEFT_SHIFT) || Input::IsKeyPressed(AURORA_KEY_RIGHT_SHIFT);
+		switch (e.GetKeyCode())
+		{
+		case AURORA_KEY_N:
+		{
+			if (isCtrlPressed)
+			{
+				NewScene();
+			}
+			break;
+		}
+		case AURORA_KEY_O:
+		{
+			if (isCtrlPressed)
+			{
+				OpenScene();
+			}
+			break;
+		}
+		case AURORA_KEY_S:
+		{
+			if (isCtrlPressed&&isShiftPressed)
+			{
+				SaveAsScene();
+			}
+			break;
+		}
+		}
+	}
+
 	void EditorLayer::OnEvent(Aurora::Event& e)
 	{
 		EventDispatcher dispatcher(e);
 		m_cameraController.OnEvent(e);
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
+	}
+
+	void EditorLayer::NewScene()
+	{
+		m_scene = CreateRef<Scene>();
+		m_scene->OnViewportResize(m_viewportSize.x, m_viewportSize.y);
+		m_sceneHierarchyPanel.SetContext(m_scene);
+	}
+
+	void EditorLayer::OpenScene()
+	{
+		std::string filePath = FileDialog::OpenFile("Scene(*.scene)\0*.scene\0");
+		if (!filePath.empty())
+		{
+			NewScene();
+			SceneSerializer sceneSerializer(m_scene);
+			sceneSerializer.Deserialize(filePath);
+		}
+	}
+
+	void EditorLayer::SaveAsScene()
+	{
+		std::string filePath = FileDialog::SaveFile("Scene(*.scene)\0*.scene\0");
+		if (!filePath.empty())
+		{
+			SceneSerializer sceneSerializer(m_scene);
+			sceneSerializer.Serialize(filePath);
+		}
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -121,16 +186,19 @@ namespace Aurora
 		{
 			if (ImGui::BeginMenu(u8"文件"))
 			{
-				if (ImGui::MenuItem(u8"打开"))
+				if (ImGui::MenuItem(u8"新建", u8"Ctrl+N"))
 				{
-					SceneSerializer sceneSerializer(m_scene);
-					sceneSerializer.Deserialize("asset\\scenes\\example.scene");
+					NewScene();
 				}
 
-				if (ImGui::MenuItem(u8"保存"))
+				if (ImGui::MenuItem(u8"打开",u8"Ctrl+O"))
 				{
-					SceneSerializer sceneSerializer(m_scene);
-					sceneSerializer.Serialize("asset\\scenes\\example.scene");
+					OpenScene();
+				}
+
+				if (ImGui::MenuItem(u8"另存为","Ctrl+Shift+S"))
+				{
+					SaveAsScene();
 				}
 
 				ImGui::EndMenu();

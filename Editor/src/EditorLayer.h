@@ -16,10 +16,11 @@ namespace Aurora
 		void OnImGuiRender()override;
 
 	private:
-		bool OnKeyPressedEvent(KeyPressedEvent& e)
-		{
-			return false;
-		}
+		bool OnKeyPressedEvent(KeyPressedEvent& e);
+
+		void NewScene();
+		void SaveAsScene();
+		void OpenScene();
 	private:
 		OrthographicCameraController      m_cameraController;
 		Ref<Texture>                      m_texture;

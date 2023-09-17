@@ -20,3 +20,5 @@
 #include "Aurora/Scene/Entity.h"
 #include "Aurora/Scene/Scene.h"
 #include "Aurora/Scene/SceneSerializer.h"
+
+#include "Aurora/Utils/PlatformUtils.h"

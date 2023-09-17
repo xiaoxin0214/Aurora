@@ -207,10 +207,10 @@ namespace Aurora
 
 			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 			{
-				float perspectiveFOV = glm::degrees(camera.GetPerspectiveFOV());
+				float perspectiveFOV = camera.GetPerspectiveFOV();
 				if (ImGui::DragFloat(u8" ”≥°Ω«", &perspectiveFOV))
 				{
-					camera.SetPerspectiveFOV(glm::radians(perspectiveFOV));
+					camera.SetPerspectiveFOV(perspectiveFOV);
 				}
 
 				float perspectiveNear = camera.GetPerspectiveNear();

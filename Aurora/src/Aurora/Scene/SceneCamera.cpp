@@ -4,7 +4,7 @@
 
 namespace Aurora
 {
-	SceneCamera::SceneCamera() :m_aspectRatio(1.0f), m_orthoGraphicNear(-1.0f), m_orthoGraphicFar(1.0f), m_orthoGraphicSize(10), m_projectionType(ProjectionType::Orthographic),m_perspectiveNear(0.001f),m_perspectiveFar(1000.0f),m_perspectiveFOV(glm::radians(45.0f))
+	SceneCamera::SceneCamera() :m_aspectRatio(1.0f), m_orthoGraphicNear(-1.0f), m_orthoGraphicFar(1.0f), m_orthoGraphicSize(10), m_projectionType(ProjectionType::Orthographic),m_perspectiveNear(0.01f),m_perspectiveFar(1000.0f),m_perspectiveFOV(45.0f)
 	{
 		ReCalcProjection();
 	}

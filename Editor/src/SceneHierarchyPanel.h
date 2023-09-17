@@ -14,6 +14,7 @@ namespace Aurora
 
 		void SetContext(Ref<Scene>& context)
 		{
+			m_selectedEntity = {};
 			m_context = context;
 		}
 
