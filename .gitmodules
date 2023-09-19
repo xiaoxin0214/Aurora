@@ -12,3 +12,6 @@
 [submodule "Aurora/vendor/yaml-cpp"]
 	path = Aurora/vendor/yaml-cpp
 	url = https://github.com/xiaoxin0214/yaml-cpp.git
+[submodule "Aurora/vendor/glm"]
+	path = Aurora/vendor/glm
+	url = https://github.com/g-truc/glm.git

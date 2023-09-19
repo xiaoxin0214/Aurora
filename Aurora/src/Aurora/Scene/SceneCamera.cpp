@@ -51,7 +51,7 @@ namespace Aurora
 		}
 		else if (m_projectionType == ProjectionType::Perspective)
 		{
-			m_projection = glm::perspective(m_perspectiveFOV, m_aspectRatio, m_perspectiveNear, m_perspectiveFar);
+			m_projection = glm::perspective(glm::radians(m_perspectiveFOV), m_aspectRatio, m_perspectiveNear, m_perspectiveFar);
 		}
 	}
 

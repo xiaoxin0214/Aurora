@@ -4,6 +4,8 @@
 #include "Aurora/Core/Timestep.h"
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
+#define GLM_ENABLE_EXPERIMENTAL
+#include <gtx/quaternion.hpp>
 namespace Aurora
 {
 	struct TagComponent
@@ -32,9 +34,7 @@ namespace Aurora
 
 		operator glm::mat4() const
 		{
-			glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f))
-				* glm::rotate(glm::mat4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))
-				* glm::rotate(glm::mat4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+			glm::mat4 rotationMatrix = glm::toMat4(glm::quat(glm::radians(rotation)));
 			return glm::translate(glm::mat4(1.0f), position) * rotationMatrix * glm::scale(glm::mat4(1.0f), scale);
 		}
 	};
