@@ -14,6 +14,7 @@ namespace Aurora
 		void OnUpdate(Timestep ts);
 		void OnViewportResize(std::uint32_t width,std::uint32_t height);
 		Entity CreateEntity(const std::string&tag);
+		Entity GetMainCameraEntity();
 		void DestroyEntity(Entity entity);
 	private:
 		template<typename T>

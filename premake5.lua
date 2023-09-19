@@ -19,6 +19,7 @@ IncludeDir["stbimage"]="Aurora/vendor/stb_image"
 IncludeDir["Optick"] = "Aurora/vendor/optick/src"
 IncludeDir["entt"] = "Aurora/vendor/entt"
 IncludeDir["Yaml"] = "Aurora/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "Aurora/vendor/ImGuizmo"
 
 
 group "Dependencies"
@@ -48,7 +49,9 @@ project "Aurora"
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 		"%{prj.name}/vendor/stb_image/stb_image.h",
-		"%{prj.name}/vendor/stb_image/stb_image.cpp"
+		"%{prj.name}/vendor/stb_image/stb_image.cpp",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
 	}
 
 	includedirs
@@ -62,7 +65,8 @@ project "Aurora"
 		"%{IncludeDir.stbimage}",
 		"%{IncludeDir.Optick}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.Yaml}"
+		"%{IncludeDir.Yaml}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
@@ -74,6 +78,9 @@ project "Aurora"
 		"Yaml",
 		"opengl32.lib"
 	}
+
+	filter "files:Aurora/vendor/ImGuizmo/**.cpp"
+	flags {"NoPCH"}
 
 	filter "system:windows"
 		systemversion "latest"
@@ -132,6 +139,7 @@ project "Editor"
 			"%{IncludeDir.GLM}",
 			"%{IncludeDir.ImGui}",
 			"%{IncludeDir.entt}",
+			"%{IncludeDir.ImGuizmo}",
 			"Aurora/src "
 		}
 	

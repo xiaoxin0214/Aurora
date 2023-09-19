@@ -18,6 +18,11 @@ namespace Aurora
 			m_context = context;
 		}
 
+		Entity GetSelectedEntity() const
+		{
+			return m_selectedEntity;
+		}
+
 		void OnImGuiRender();
 	private:
 		void DrawEntityNode(Entity entity);

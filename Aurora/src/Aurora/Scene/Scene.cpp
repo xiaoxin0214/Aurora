@@ -23,6 +23,21 @@ namespace Aurora
 		return entity;
 	}
 
+	Entity Scene::GetMainCameraEntity()
+	{
+		auto& group = m_registry.view<CameraComponent>();
+		for (auto& entity : group)
+		{
+			auto& camera = group.get<CameraComponent>(entity);
+			if (camera.isMainCamera)
+			{
+				return { entity,this };
+			}
+		}
+
+		return {};
+	}
+
 	void Scene::DestroyEntity(Entity entity)
 	{
 		m_registry.destroy(entity);

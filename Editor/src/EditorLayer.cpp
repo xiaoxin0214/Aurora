@@ -2,6 +2,8 @@
 #include "imgui.h"
 #include "gtc/matrix_transform.hpp"
 #include "gtc/type_ptr.hpp"
+#include "ImGuizmo.h"
+
 namespace Aurora
 {
 	class CameraController :public ScriptableEntity
@@ -43,7 +45,7 @@ namespace Aurora
 		}
 	};
 
-	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_viewportSize(0.0, 0.0), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false)
+	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_viewportSize(0.0, 0.0), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false),m_imguizmoOperation(-1)
 	{
 		m_texture = Texture2D::Create("asset\\textures\\tilemap_packed.png");
 	}
@@ -106,10 +108,31 @@ namespace Aurora
 		}
 		case AURORA_KEY_S:
 		{
-			if (isCtrlPressed&&isShiftPressed)
+			if (isCtrlPressed && isShiftPressed)
 			{
 				SaveAsScene();
 			}
+			break;
+		}
+
+		case AURORA_KEY_Q:
+		{
+			m_imguizmoOperation = -1;
+			break;
+		}
+		case AURORA_KEY_W:
+		{
+			m_imguizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+			break;
+		}
+		case AURORA_KEY_E:
+		{
+			m_imguizmoOperation = ImGuizmo::OPERATION::ROTATE;
+			break;
+		}
+		case AURORA_KEY_R:
+		{
+			m_imguizmoOperation = ImGuizmo::OPERATION::SCALE;
 			break;
 		}
 		}
@@ -149,7 +172,7 @@ namespace Aurora
 			sceneSerializer.Serialize(filePath);
 		}
 	}
-
+	
 	void EditorLayer::OnImGuiRender()
 	{
 		static bool p_open = true;
@@ -223,7 +246,7 @@ namespace Aurora
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
 
-		Application::GetInstance()->GetImGuiLayer()->BlockEvents(!m_viewportFocused || !m_viewportHovered);
+		Application::GetInstance()->GetImGuiLayer()->BlockEvents(!m_viewportFocused && !m_viewportHovered);
 
 		auto region = ImGui::GetContentRegionAvail();
 		if (m_viewportSize.x != region.x || m_viewportSize.y != region.y)
@@ -236,6 +259,35 @@ namespace Aurora
 		}
 		auto textureID = m_frameBuffer->GetColorAttachmentID();
 		ImGui::Image((void*)textureID, ImVec2(m_viewportSize.x, m_viewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
+		
+		Entity selectedEntity = m_sceneHierarchyPanel.GetSelectedEntity();
+		if (selectedEntity&&m_imguizmoOperation!=-1)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x,ImGui::GetWindowPos().y,ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
+
+			auto cameraEntity = m_scene->GetMainCameraEntity();
+			const auto& camera = cameraEntity.GetComponent<CameraComponent>().camera;
+			glm::mat4 transform = cameraEntity.GetComponent<TransformComponent>();
+			const glm::mat4& cameraProjectionMatrix = camera.GetProjection();
+			glm::mat4 cameraViewMatrix = glm::inverse(transform);
+			glm::mat4 selectedEntityTransform=selectedEntity.GetComponent<TransformComponent>();
+			auto& transformComponent = selectedEntity.GetComponent<TransformComponent>();
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraViewMatrix), glm::value_ptr(cameraProjectionMatrix),
+				(ImGuizmo::OPERATION)m_imguizmoOperation, ImGuizmo::MODE::LOCAL, glm::value_ptr(selectedEntityTransform));
+
+			if (ImGuizmo::IsUsing())
+			{
+				glm::vec3 translate, rotation, scale;
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(selectedEntityTransform), glm::value_ptr(translate), glm::value_ptr(rotation), glm::value_ptr(scale));
+				transformComponent.position = translate;
+				transformComponent.scale = scale;
+				transformComponent.rotation = rotation;
+			}
+		}
+
 		ImGui::End();
 		ImGui::PopStyleVar();
 

@@ -32,5 +32,6 @@ namespace Aurora
 		glm::vec2                         m_viewportSize;
 		bool                              m_viewportFocused;
 		bool                              m_viewportHovered;
+		std::int32_t                      m_imguizmoOperation;
 	};
 }
