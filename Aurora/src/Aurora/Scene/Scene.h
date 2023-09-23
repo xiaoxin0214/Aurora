@@ -2,6 +2,7 @@
 #include "Aurora/Core/Core.h"
 #include "entt.hpp"
 #include "Aurora/Core/Timestep.h"
+#include "Aurora/Renderer/EditorCamera.h"
 namespace Aurora
 {
 	class Entity;
@@ -12,6 +13,7 @@ namespace Aurora
 		~Scene();
 
 		void OnUpdate(Timestep ts);
+		void OnUpdateEditor(Timestep ts, EditorCamera& editorCamera);
 		void OnViewportResize(std::uint32_t width,std::uint32_t height);
 		Entity CreateEntity(const std::string&tag);
 		Entity GetMainCameraEntity();

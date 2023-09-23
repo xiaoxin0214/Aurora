@@ -2,14 +2,14 @@ Scene: Untitled
 Entities:
   - Entity: 3
     TagComponent:
-      Tag: Left
+      Tag: Top
     TransformComponent:
-      Position: [-0.354999989, 0, 0.349999994]
-      Rotation: [0, -45, 0]
+      Position: [0, 0.5, 0]
+      Rotation: [90, 45, 0]
       Scale: [1, 1, 1]
     MeshComponent:
-      Color: [1, 1, 0, 1]
-  - Entity: 2
+      Color: [0, 1, 1, 1]
+  - Entity: 1
     TagComponent:
       Tag: Right
     TransformComponent:
@@ -18,30 +18,12 @@ Entities:
       Scale: [1, 1, 1]
     MeshComponent:
       Color: [0, 1, 0, 1]
-  - Entity: 1
-    TagComponent:
-      Tag: Camera
-    TransformComponent:
-      Position: [0, 1.70000005, 4]
-      Rotation: [-24.2999992, 0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 0
-        PerspectiveFOV: 30
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      IsMainCamera: true
-      IsFixedAspectRatio: false
   - Entity: 0
     TagComponent:
-      Tag: Top
+      Tag: Left
     TransformComponent:
-      Position: [0, 0.5, 0]
-      Rotation: [90, 45, 0]
+      Position: [-0.354999989, 0, 0.349999994]
+      Rotation: [0, -45, 0]
       Scale: [1, 1, 1]
     MeshComponent:
-      Color: [0, 1, 1, 1]
+      Color: [1, 1, 0, 1]

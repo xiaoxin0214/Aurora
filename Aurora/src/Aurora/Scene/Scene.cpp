@@ -92,6 +92,19 @@ namespace Aurora
 		}
 	}
 
+	void Scene::OnUpdateEditor(Timestep ts, EditorCamera& editorCamera)
+	{
+		Renderer2D::BeginScene(editorCamera);
+		auto& group = m_registry.group<TransformComponent, MeshComponent>();
+		for (auto& entity : group)
+		{
+			auto& transform = group.get<TransformComponent>(entity);
+			auto& mesh = group.get<MeshComponent>(entity);
+			Renderer2D::DrawQuad(transform, mesh.color);
+		}
+		Renderer2D::EndScene();
+	}
+
 	void Scene::OnViewportResize(std::uint32_t width, std::uint32_t height)
 	{
 		m_viewportWidth = width;

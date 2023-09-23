@@ -109,6 +109,16 @@ namespace Aurora
 		s_pData->textureSlotIndex = 1;
 	}
 
+	void Renderer2D::BeginScene(const EditorCamera& editorCamera)
+	{
+		glm::mat4 viewProjectionMatrix = editorCamera.GetViewProjection();
+		s_pData->shader->Bind();
+		s_pData->shader->SetUniformMat4("u_viewProjection", viewProjectionMatrix);
+		s_pData->pVertex = s_pData->pVertexBase;
+		s_pData->indicesCount = 0;
+		s_pData->textureSlotIndex = 1;
+	}
+
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
 		s_pData->shader->Bind();

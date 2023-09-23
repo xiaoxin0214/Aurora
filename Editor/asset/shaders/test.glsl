@@ -22,6 +22,7 @@ void main()
 #shadertype fragment
 #version 330 core
 layout(location = 0) out vec4 color;
+layout(location = 1) out vec4 color1;
 uniform sampler2D u_textures[32];
 in vec3 v_pos;
 in vec4 v_color;
@@ -31,4 +32,5 @@ void main()
 {
 	color=texture(u_textures[int(v_texIndex)],v_texcoord);
 	color*=v_color;
+	color1=vec4(0.1,0.9,0.9,1.0);
 }

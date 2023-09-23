@@ -1,6 +1,7 @@
 #pragma once
 #include "Aurora.h"
 #include "SceneHierarchyPanel.h"
+
 namespace Aurora
 {
 	class EditorLayer :public Layer {
@@ -22,12 +23,11 @@ namespace Aurora
 		void SaveAsScene();
 		void OpenScene();
 	private:
-		OrthographicCameraController      m_cameraController;
 		Ref<Texture>                      m_texture;
 		Ref<FrameBuffer>                  m_frameBuffer;
 		Ref<Scene>                        m_scene;
+		EditorCamera                      m_editorCamera;
 		SceneHierarchyPanel               m_sceneHierarchyPanel;
-		Entity                            m_cameraEntity;
 		glm::vec4                         m_color;
 		glm::vec2                         m_viewportSize;
 		bool                              m_viewportFocused;

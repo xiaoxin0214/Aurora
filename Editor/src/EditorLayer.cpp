@@ -45,7 +45,7 @@ namespace Aurora
 		}
 	};
 
-	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_viewportSize(0.0, 0.0), m_cameraController(1960.0f / 1080.f), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false),m_imguizmoOperation(-1)
+	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_viewportSize(0.0, 0.0), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false), m_imguizmoOperation(-1)
 	{
 		m_texture = Texture2D::Create("asset\\textures\\tilemap_packed.png");
 	}
@@ -56,10 +56,10 @@ namespace Aurora
 		props.width = 1960;
 		props.height = 1080;
 		props.samples = 1;
+		props.attachments = { FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::DEPTH };
 		m_frameBuffer = FrameBuffer::Create(props);
 		m_scene = CreateRef<Scene>();
 
-		//m_cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_sceneHierarchyPanel.SetContext(m_scene);
 
 	}
@@ -69,14 +69,14 @@ namespace Aurora
 		float ts = timestep;
 		if (m_viewportFocused)
 		{
-			m_cameraController.OnUpdate(timestep);
+			m_editorCamera.OnUpdate(ts);
 		}
 
 		Renderer2D::ResetStatistics();
 		m_frameBuffer->Bind();
 		RendererCommand::Clear();
 
-		m_scene->OnUpdate(ts);
+		m_scene->OnUpdateEditor(ts, m_editorCamera);
 
 		m_frameBuffer->UnBind();
 	}
@@ -86,7 +86,7 @@ namespace Aurora
 		if (e.GetRepeatCount() > 0)
 			return false;
 
-		bool isCtrlPressed = Input::IsKeyPressed(AURORA_KEY_LEFT_CONTROL)|| Input::IsKeyPressed(AURORA_KEY_RIGHT_CONTROL);
+		bool isCtrlPressed = Input::IsKeyPressed(AURORA_KEY_LEFT_CONTROL) || Input::IsKeyPressed(AURORA_KEY_RIGHT_CONTROL);
 		bool isShiftPressed = Input::IsKeyPressed(AURORA_KEY_LEFT_SHIFT) || Input::IsKeyPressed(AURORA_KEY_RIGHT_SHIFT);
 		switch (e.GetKeyCode())
 		{
@@ -140,8 +140,8 @@ namespace Aurora
 
 	void EditorLayer::OnEvent(Aurora::Event& e)
 	{
+		m_editorCamera.OnEvent(e);
 		EventDispatcher dispatcher(e);
-		m_cameraController.OnEvent(e);
 		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
 	}
 
@@ -172,7 +172,7 @@ namespace Aurora
 			sceneSerializer.Serialize(filePath);
 		}
 	}
-	
+
 	void EditorLayer::OnImGuiRender()
 	{
 		static bool p_open = true;
@@ -214,12 +214,12 @@ namespace Aurora
 					NewScene();
 				}
 
-				if (ImGui::MenuItem(u8"打开",u8"Ctrl+O"))
+				if (ImGui::MenuItem(u8"打开", u8"Ctrl+O"))
 				{
 					OpenScene();
 				}
 
-				if (ImGui::MenuItem(u8"另存为","Ctrl+Shift+S"))
+				if (ImGui::MenuItem(u8"另存为", "Ctrl+Shift+S"))
 				{
 					SaveAsScene();
 				}
@@ -254,25 +254,23 @@ namespace Aurora
 			m_frameBuffer->Resize((std::uint32_t)region.x, (std::uint32_t)region.y);
 			m_viewportSize.x = region.x;
 			m_viewportSize.y = region.y;
-			m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
+			m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
 			m_scene->OnViewportResize(m_viewportSize.x, m_viewportSize.y);
 		}
-		auto textureID = m_frameBuffer->GetColorAttachmentID();
+		auto textureID = m_frameBuffer->GetColorAttachmentID(1);
 		ImGui::Image((void*)textureID, ImVec2(m_viewportSize.x, m_viewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
-		
+
 		Entity selectedEntity = m_sceneHierarchyPanel.GetSelectedEntity();
-		if (selectedEntity&&m_imguizmoOperation!=-1)
+		if (selectedEntity && m_imguizmoOperation != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x,ImGui::GetWindowPos().y,ImGui::GetWindowWidth(),ImGui::GetWindowHeight());
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
 
-			auto cameraEntity = m_scene->GetMainCameraEntity();
-			const auto& camera = cameraEntity.GetComponent<CameraComponent>().camera;
-			glm::mat4 transform = cameraEntity.GetComponent<TransformComponent>();
-			const glm::mat4& cameraProjectionMatrix = camera.GetProjection();
-			glm::mat4 cameraViewMatrix = glm::inverse(transform);
-			glm::mat4 selectedEntityTransform=selectedEntity.GetComponent<TransformComponent>();
+			const glm::mat4& cameraProjectionMatrix = m_editorCamera.GetProjection();
+			glm::mat4 cameraViewMatrix = m_editorCamera.GetViewMatrix();
+
+			glm::mat4 selectedEntityTransform = selectedEntity.GetComponent<TransformComponent>();
 			auto& transformComponent = selectedEntity.GetComponent<TransformComponent>();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraViewMatrix), glm::value_ptr(cameraProjectionMatrix),

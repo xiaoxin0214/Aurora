@@ -18,15 +18,17 @@ namespace Aurora
 			return m_props;
 		}
 
-		std::uint32_t GetColorAttachmentID()const override
+		std::uint32_t GetColorAttachmentID(std::uint32_t index=0)const override
 		{
-			return m_colorAttachment;
+			return m_colorAttachments[index];
 		}
 
 	private:
 		FrameBufferProps m_props;
 		std::uint32_t    m_frameBufferID;
-		std::uint32_t    m_colorAttachment;
 		std::uint32_t    m_depthAttachment;
+		std::vector<FrameBufferTextureProps> m_colorsAttachmentProps;
+		FrameBufferTextureProps              m_depthAttachmentProps;
+		std::vector<std::uint32_t>           m_colorAttachments;
 	};
 }
