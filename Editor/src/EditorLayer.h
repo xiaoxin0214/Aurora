@@ -29,7 +29,7 @@ namespace Aurora
 		Ref<Scene>                        m_scene;
 		EditorCamera                      m_editorCamera;
 		SceneHierarchyPanel               m_sceneHierarchyPanel;
-		BoundingBox2<>                    m_viewportBounds;
+		BoundingBox2<std::uint32_t>       m_viewportBounds;
 		Entity                            m_hoveredEntity;
 		glm::vec4                         m_color;
 		glm::vec2                         m_viewportSize;

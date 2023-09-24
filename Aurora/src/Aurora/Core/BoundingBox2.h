@@ -36,7 +36,7 @@ namespace Aurora
 
 		bool Contains(T x, T y)
 		{
-			if (x < xmin || x > xmax || y < ymin || y > ymax)
+			if (x <= xmin || x >= xmax || y <= ymin || y >= ymax)
 				return false;
 
 			return true;
