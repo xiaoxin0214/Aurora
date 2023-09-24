@@ -23,6 +23,11 @@ namespace Aurora
 			return m_selectedEntity;
 		}
 
+		void SetSelectedEntity(Entity entity)
+		{
+			m_selectedEntity = entity;
+		}
+
 		void OnImGuiRender();
 	private:
 		void DrawEntityNode(Entity entity);

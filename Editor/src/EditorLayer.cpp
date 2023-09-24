@@ -56,7 +56,7 @@ namespace Aurora
 		props.width = 1960;
 		props.height = 1080;
 		props.samples = 1;
-		props.attachments = { FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::DEPTH };
+		props.attachments = { FrameBufferTextureFormat::RGBA8,FrameBufferTextureFormat::REDINTEGER,FrameBufferTextureFormat::DEPTH };
 		m_frameBuffer = FrameBuffer::Create(props);
 		m_scene = CreateRef<Scene>();
 
@@ -75,8 +75,22 @@ namespace Aurora
 		Renderer2D::ResetStatistics();
 		m_frameBuffer->Bind();
 		RendererCommand::Clear();
+		m_frameBuffer->ClearColorAttachment(1, -1);
 
 		m_scene->OnUpdateEditor(ts, m_editorCamera);
+
+		auto mousePos = ImGui::GetMousePos();
+		if (m_viewportBounds.Contains(mousePos.x, mousePos.y))
+		{
+			std::uint32_t x = mousePos.x - m_viewportBounds.xmin;
+			std::uint32_t y = m_viewportBounds.Height() - (mousePos.y - m_viewportBounds.ymin);
+			int pixelData=m_frameBuffer->ReadPixel(1,x,y);
+			m_hoveredEntity = pixelData == -1 ? Entity() : Entity({(entt::entity)pixelData,m_scene.get()});
+			if (m_hoveredEntity)
+			{
+				AURORA_CORE_INFO("{0}",m_hoveredEntity.GetComponent<TagComponent>().tag.c_str());
+			}
+		}
 
 		m_frameBuffer->UnBind();
 	}
@@ -136,6 +150,19 @@ namespace Aurora
 			break;
 		}
 		}
+		return false;
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		if (AURORA_MOUSE_BUTTON_LEFT == e.GetButton())
+		{
+			if (m_hoveredEntity&&!ImGuizmo::IsOver())
+			{
+				m_sceneHierarchyPanel.SetSelectedEntity(m_hoveredEntity);
+			}
+		}
+		return false;
 	}
 
 	void EditorLayer::OnEvent(Aurora::Event& e)
@@ -143,6 +170,7 @@ namespace Aurora
 		m_editorCamera.OnEvent(e);
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
+		dispatcher.dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
 	}
 
 	void EditorLayer::NewScene()
@@ -246,6 +274,8 @@ namespace Aurora
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
 
+		auto viewportOffset = ImGui::GetCursorPos();
+
 		Application::GetInstance()->GetImGuiLayer()->BlockEvents(!m_viewportFocused && !m_viewportHovered);
 
 		auto region = ImGui::GetContentRegionAvail();
@@ -257,8 +287,14 @@ namespace Aurora
 			m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
 			m_scene->OnViewportResize(m_viewportSize.x, m_viewportSize.y);
 		}
-		auto textureID = m_frameBuffer->GetColorAttachmentID(1);
+		auto textureID = m_frameBuffer->GetColorAttachmentID(0);
 		ImGui::Image((void*)textureID, ImVec2(m_viewportSize.x, m_viewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
+
+		auto windowSize = ImGui::GetWindowSize();
+		auto minBound = ImGui::GetWindowPos();
+
+		m_viewportBounds.Set(minBound.x+viewportOffset.x, minBound.y+viewportOffset.y, minBound.x + windowSize.x, minBound.y + windowSize.y);
+
 
 		Entity selectedEntity = m_sceneHierarchyPanel.GetSelectedEntity();
 		if (selectedEntity && m_imguizmoOperation != -1)

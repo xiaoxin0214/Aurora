@@ -8,7 +8,7 @@ namespace Aurora
 		m_count = count;
 		glCreateBuffers(1, &m_indexBufferID);
 		Bind();
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count*sizeof(unsigned int), indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 	}
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
@@ -18,7 +18,7 @@ namespace Aurora
 
 	void OpenGLIndexBuffer::Bind()const
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,m_indexBufferID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
 	}
 
 	void OpenGLIndexBuffer::UnBind()const

@@ -17,7 +17,7 @@ namespace Aurora
 			return CreateRef<OpenGLFrameBuffer>(props);
 		}
 
-		AURORA_CORE_ASSERT(false,"´íÎóµÄRendererAPI£¡");
+		AURORA_CORE_ASSERT(false, "´íÎóµÄRendererAPI£¡");
 		return NULL;
 	}
 }

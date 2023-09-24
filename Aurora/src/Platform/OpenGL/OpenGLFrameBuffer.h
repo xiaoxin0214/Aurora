@@ -9,7 +9,8 @@ namespace Aurora
 		~OpenGLFrameBuffer();
 		void Invalidate();
 
-		void Resize(std::uint32_t width,std::uint32_t height)override;
+		void Resize(std::uint32_t width, std::uint32_t height)override;
+		int ReadPixel(std::uint32_t colorAttachmentIndex,std::uint32_t x,std::uint32_t y)const override;
 		void Bind()const override;
 		void UnBind()const override;
 
@@ -18,10 +19,12 @@ namespace Aurora
 			return m_props;
 		}
 
-		std::uint32_t GetColorAttachmentID(std::uint32_t index=0)const override
+		std::uint32_t GetColorAttachmentID(std::uint32_t index = 0)const override
 		{
 			return m_colorAttachments[index];
 		}
+
+		void ClearColorAttachment(std::uint32_t colorAttachmentIndex,int value)override;
 
 	private:
 		FrameBufferProps m_props;

@@ -18,26 +18,26 @@ namespace Aurora
 		return isMultiSampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 	}
 
-	static void CreateTextures(bool isMultiSampled,std::uint32_t* pOutID,std::uint32_t count)
+	static void CreateTextures(bool isMultiSampled, std::uint32_t* pOutID, std::uint32_t count)
 	{
 		glCreateTextures(TextureTarget(isMultiSampled), count, pOutID);
 	}
 
-	static void BindTexture(bool isMultiSampled,std::uint32_t id)
+	static void BindTexture(bool isMultiSampled, std::uint32_t id)
 	{
-		glBindTexture(TextureTarget(isMultiSampled),id);
+		glBindTexture(TextureTarget(isMultiSampled), id);
 	}
 
-	static void AttachColorTexture(std::uint32_t id,GLenum format,std::uint32_t samples,std::uint32_t width,std::uint32_t height,int index)
+	static void AttachColorTexture(std::uint32_t id,GLenum interFormat, GLenum format, std::uint32_t samples, std::uint32_t width, std::uint32_t height, int index)
 	{
 		bool isMultiSampled = samples > 1;
 		if (isMultiSampled)
 		{
-			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE,samples,format,width,height,GL_FALSE);
+			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
 		}
 		else
 		{
-			glTexImage2D(GL_TEXTURE_2D,0,format,width,height,0,GL_RGB,GL_UNSIGNED_BYTE,nullptr);
+			glTexImage2D(GL_TEXTURE_2D, 0, interFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -45,10 +45,10 @@ namespace Aurora
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		}
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+index, TextureTarget(isMultiSampled), id, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(isMultiSampled), id, 0);
 	}
 
-	static void AttachDepthTexture(std::uint32_t id, GLenum format,GLenum attachmentType, std::uint32_t samples, std::uint32_t width, std::uint32_t height)
+	static void AttachDepthTexture(std::uint32_t id, GLenum format, GLenum attachmentType, std::uint32_t samples, std::uint32_t width, std::uint32_t height)
 	{
 		bool isMultiSampled = samples > 1;
 		if (isMultiSampled)
@@ -62,7 +62,7 @@ namespace Aurora
 		glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(isMultiSampled), id, 0);
 	}
 
-	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferProps& props) :m_props(props),m_frameBufferID(0),m_depthAttachment(0)
+	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferProps& props) :m_props(props), m_frameBufferID(0), m_depthAttachment(0)
 	{
 		for (auto attachment : props.attachments.attachments)
 		{
@@ -98,7 +98,7 @@ namespace Aurora
 			glDeleteTextures(1, &m_depthAttachment);
 		}
 
-		if (m_frameBufferID!=0)
+		if (m_frameBufferID != 0)
 		{
 			glDeleteFramebuffers(1, &m_frameBufferID);
 		}
@@ -110,25 +110,30 @@ namespace Aurora
 		if (!m_colorsAttachmentProps.empty())
 		{
 			m_colorAttachments.resize(m_colorsAttachmentProps.size());
-			CreateTextures(isMultiSampled, m_colorAttachments.data(),m_colorsAttachmentProps.size());
+			CreateTextures(isMultiSampled, m_colorAttachments.data(), m_colorsAttachmentProps.size());
 
-			for (std::uint32_t i=0;i< m_colorAttachments.size();++i)
+			for (std::uint32_t i = 0; i < m_colorAttachments.size(); ++i)
 			{
 				BindTexture(isMultiSampled, m_colorAttachments[i]);
 				switch (m_colorsAttachmentProps[i].textureFormat)
 				{
 				case FrameBufferTextureFormat::RGBA8:
-					{
-						AttachColorTexture(m_colorAttachments[i],GL_RGBA,m_props.samples,m_props.width,m_props.height,i);
-						break;
-					}
+				{
+					AttachColorTexture(m_colorAttachments[i], GL_RGBA8,GL_RGB, m_props.samples, m_props.width, m_props.height, i);
+					break;
+				}
+				case FrameBufferTextureFormat::REDINTEGER:
+				{
+					AttachColorTexture(m_colorAttachments[i], GL_R32I,GL_RED_INTEGER, m_props.samples, m_props.width, m_props.height, i);
+					break;
+				}
 				}
 			}
 		}
 
 		if (m_depthAttachmentProps.textureFormat != FrameBufferTextureFormat::NONE)
 		{
-			CreateTextures(isMultiSampled,&m_depthAttachment, 1);
+			CreateTextures(isMultiSampled, &m_depthAttachment, 1);
 			BindTexture(isMultiSampled, m_depthAttachment);
 			switch (m_depthAttachmentProps.textureFormat)
 			{
@@ -142,7 +147,7 @@ namespace Aurora
 
 		if (!m_colorAttachments.empty())
 		{
-			AURORA_CORE_ASSERT(m_colorAttachments.size()<=4, "colorAttachment个数必须小于等于4!");
+			AURORA_CORE_ASSERT(m_colorAttachments.size() <= 4, "colorAttachment个数必须小于等于4!");
 			GLenum buffers[4] = { GL_COLOR_ATTACHMENT0,GL_COLOR_ATTACHMENT1 ,GL_COLOR_ATTACHMENT2 ,GL_COLOR_ATTACHMENT3 };
 			glDrawBuffers(m_colorAttachments.size(), buffers);
 		}
@@ -155,17 +160,42 @@ namespace Aurora
 		UnBind();
 	}
 
-	void OpenGLFrameBuffer::Resize(std::uint32_t width,std::uint32_t height)
+	void OpenGLFrameBuffer::Resize(std::uint32_t width, std::uint32_t height)
 	{
 		m_props.width = width;
 		m_props.height = height;
 		Invalidate();
 
 	}
+
+	int OpenGLFrameBuffer::ReadPixel(std::uint32_t colorAttachmentIndex, std::uint32_t x, std::uint32_t y)const
+	{
+		AURORA_CORE_ASSERT(colorAttachmentIndex<m_colorAttachments.size(),"colorAttachmentIndex越界");
+		glReadBuffer(GL_COLOR_ATTACHMENT0+colorAttachmentIndex);
+		int pixelData;
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+		return pixelData;
+	}
+
+	void OpenGLFrameBuffer::ClearColorAttachment(std::uint32_t colorAttachmentIndex, int value)
+	{
+		AURORA_CORE_ASSERT(colorAttachmentIndex < m_colorAttachments.size(), "colorAttachmentIndex越界");
+		auto& attachmentProps = m_colorsAttachmentProps[colorAttachmentIndex];
+		if (FrameBufferTextureFormat::RGBA8 == attachmentProps.textureFormat)
+		{
+			glClearTexImage(m_colorAttachments[colorAttachmentIndex],0,GL_RGBA8,GL_INT,&value);
+		}
+		else if (FrameBufferTextureFormat::REDINTEGER == attachmentProps.textureFormat)
+		{
+			glClearTexImage(m_colorAttachments[colorAttachmentIndex], 0, GL_RED_INTEGER, GL_INT, &value);
+		}
+
+	}
+
 	void OpenGLFrameBuffer::Bind()const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferID);
-		glViewport(0,0,m_props.width,m_props.height);
+		glViewport(0, 0, m_props.width, m_props.height);
 	}
 
 	void OpenGLFrameBuffer::UnBind()const

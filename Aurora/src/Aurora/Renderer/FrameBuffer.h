@@ -6,6 +6,7 @@ namespace Aurora
 	{
 		NONE,
 		RGBA8,
+		REDINTEGER,
 		DEPTH24STENCIL8,
 		DEPTH = DEPTH24STENCIL8
 	};
@@ -52,8 +53,10 @@ namespace Aurora
 		virtual ~FrameBuffer() {};
 
 		virtual void Resize(std::uint32_t width, std::uint32_t height) = 0;
+		virtual int  ReadPixel(std::uint32_t colorAttachmentIndex, std::uint32_t x, std::uint32_t y)const=0;
 		virtual const FrameBufferProps& GetFrameBufferProps()const = 0;
 		virtual std::uint32_t GetColorAttachmentID(std::uint32_t index=0)const = 0;
+		virtual void ClearColorAttachment(std::uint32_t colorAttachmentIndex, int value)=0;
 		virtual void Bind()const = 0;
 		virtual void UnBind()const = 0;
 	public:

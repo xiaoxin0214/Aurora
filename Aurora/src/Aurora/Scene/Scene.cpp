@@ -86,7 +86,7 @@ namespace Aurora
 			{
 				auto& transform = group.get<TransformComponent>(entity);
 				auto& mesh = group.get<MeshComponent>(entity);
-				Renderer2D::DrawQuad(transform, mesh.color);
+				Renderer2D::DrawQuad(transform, mesh.color,(int)entity);
 			}
 			Renderer2D::EndScene();
 		}
@@ -100,7 +100,7 @@ namespace Aurora
 		{
 			auto& transform = group.get<TransformComponent>(entity);
 			auto& mesh = group.get<MeshComponent>(entity);
-			Renderer2D::DrawQuad(transform, mesh.color);
+			Renderer2D::DrawQuad(transform, mesh.color, (int)entity);
 		}
 		Renderer2D::EndScene();
 	}

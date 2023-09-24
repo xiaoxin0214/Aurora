@@ -2,11 +2,16 @@
 
 #include "Aurora/Core/Application.h"
 #include "Aurora/Core/Log.h"
-#include "Aurora/Core/Layer.h"	
-#include "Aurora/ImGui/ImGuiLayer.h"
+#include "Aurora/Core/Layer.h"
+
 #include "Aurora/Core/KeyCodes.h"
 #include "Aurora/Core/MouseButtonCodes.h"
 #include "Aurora/Core/Input.h"
+
+#include "Aurora/Core/BoundingBox2.h"
+
+#include "Aurora/ImGui/ImGuiLayer.h"
+
 #include "Aurora/Renderer/OrthographicCameraController.h"
 #include "Aurora/Renderer/EditorCamera.h"
 

@@ -14,6 +14,7 @@ namespace Aurora
 		glm::vec4 color;
 		glm::vec2 texCoord;
 		float     textureIndex;
+		int       entityID;
 	};
 
 	struct Renderer2DStorage
@@ -50,7 +51,8 @@ namespace Aurora
 			{ShaderDataType::Float3,"a_pos"},
 			{ShaderDataType::Float4,"a_color"},
 			{ShaderDataType::Float2,"a_texcoord"},
-			{ShaderDataType::Float,"a_texIndex"}
+			{ShaderDataType::Float,"a_texIndex"},
+			{ShaderDataType::Int,"a_entityID"}
 			});
 
 		s_pData->vertexBuffer.reset(VertexBuffer::Create(s_pData->maxVertexNum * sizeof(Vertex)));
@@ -134,7 +136,7 @@ namespace Aurora
 		Flush();
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subTexture, const glm::vec4& tintColor)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subTexture, const glm::vec4& tintColor,int entityID)
 	{
 		if (s_pData->indicesCount >= Renderer2DStorage::maxIndexNum)
 			FlushAndReset();
@@ -162,24 +164,28 @@ namespace Aurora
 		s_pData->pVertex->color = tintColor;
 		s_pData->pVertex->texCoord = texCoords[0];
 		s_pData->pVertex->textureIndex = textureIndex;
+		s_pData->pVertex->entityID = entityID;
 		s_pData->pVertex++;
 
 		s_pData->pVertex->position = glm::vec3(transform * glm::vec4(0.5f, -0.5f, 0.0f, 1.0f));
 		s_pData->pVertex->color = tintColor;
 		s_pData->pVertex->texCoord = texCoords[1];
 		s_pData->pVertex->textureIndex = textureIndex;
+		s_pData->pVertex->entityID = entityID;
 		s_pData->pVertex++;
 
 		s_pData->pVertex->position = glm::vec3(transform * glm::vec4(0.5f, 0.5f, 0.0f, 1.0f));
 		s_pData->pVertex->color = tintColor;
 		s_pData->pVertex->texCoord = texCoords[2];
 		s_pData->pVertex->textureIndex = textureIndex;
+		s_pData->pVertex->entityID = entityID;
 		s_pData->pVertex++;
 
 		s_pData->pVertex->position = glm::vec3(transform * glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f));
 		s_pData->pVertex->color = tintColor;
 		s_pData->pVertex->texCoord = texCoords[3];
 		s_pData->pVertex->textureIndex = textureIndex;
+		s_pData->pVertex->entityID = entityID;
 		s_pData->pVertex++;
 
 		s_pData->indicesCount += 6;
@@ -191,10 +197,10 @@ namespace Aurora
 		DrawQuad(pos, size, rotation, s_pData->whiteTexture, color);
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
 	{
 		auto subTexture2D = SubTexture2D::Create(s_pData->whiteTexture, glm::vec2(0.0f), glm::vec2(1.0f));
-		DrawQuad(transform, subTexture2D, color);
+		DrawQuad(transform, subTexture2D, color, entityID);
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, const Ref<Texture>& texture, const glm::vec4& tintColor)

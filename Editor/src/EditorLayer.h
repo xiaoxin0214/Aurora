@@ -18,6 +18,7 @@ namespace Aurora
 
 	private:
 		bool OnKeyPressedEvent(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		void NewScene();
 		void SaveAsScene();
@@ -28,6 +29,8 @@ namespace Aurora
 		Ref<Scene>                        m_scene;
 		EditorCamera                      m_editorCamera;
 		SceneHierarchyPanel               m_sceneHierarchyPanel;
+		BoundingBox2<>                    m_viewportBounds;
+		Entity                            m_hoveredEntity;
 		glm::vec4                         m_color;
 		glm::vec2                         m_viewportSize;
 		bool                              m_viewportFocused;

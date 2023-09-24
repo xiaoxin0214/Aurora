@@ -55,8 +55,30 @@ namespace Aurora
 		const auto& layout = vb->GetLayout();
 		for (const auto& elem : layout)
 		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, elem.GetComponentCount(), ShaderDataType2OpenGLType(elem.dataType), elem.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(), (const void*)elem.offset);
+			switch (elem.dataType)
+			{
+			case ShaderDataType::Float:
+			case ShaderDataType::Float2:
+			case ShaderDataType::Float3:
+			case ShaderDataType::Float4:
+			{
+				glEnableVertexAttribArray(index);
+				glVertexAttribPointer(index, elem.GetComponentCount(), ShaderDataType2OpenGLType(elem.dataType), elem.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(), (const void*)elem.offset);
+				break;
+			}
+			case ShaderDataType::Int: 
+			case ShaderDataType::Int2:
+			case ShaderDataType::Int3:
+			case ShaderDataType::Int4:
+			case ShaderDataType::Bool:
+			{
+				glEnableVertexAttribArray(index);
+				glVertexAttribIPointer(index, elem.GetComponentCount(), ShaderDataType2OpenGLType(elem.dataType), layout.GetStride(), (const void*)elem.offset);
+				break;
+			}
+
+			}
+
 			index++;
 		}
 		m_vertexBufferLst.push_back(vb);
