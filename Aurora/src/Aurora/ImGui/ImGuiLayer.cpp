@@ -45,7 +45,7 @@ namespace Aurora
 		// Setup Platform/Renderer backends
 		auto pWindow = static_cast<GLFWwindow*>(Application::GetInstance()->GetNativeWindow());
 		ImGui_ImplGlfw_InitForOpenGL(pWindow, true);
-		ImGui_ImplOpenGL3_Init("#version 410");
+		ImGui_ImplOpenGL3_Init("#version 450");
 		io.FontDefault=io.Fonts->AddFontFromFileTTF("asset/fonts/Deng.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
 	}
 

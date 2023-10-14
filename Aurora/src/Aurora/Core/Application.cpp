@@ -10,7 +10,7 @@
 namespace Aurora
 {
 	Application* Application::s_pInstance = NULL;
-	Application::Application(const std::string&name)
+	Application::Application(const std::string& name)
 	{
 		AURORA_CORE_ASSERT(NULL == s_pInstance, "Application 已经初始化过了！");
 		s_pInstance = this;

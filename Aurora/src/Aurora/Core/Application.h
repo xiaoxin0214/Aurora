@@ -39,7 +39,7 @@ namespace Aurora
 		bool OnWindowResizeEvent(const WindowResizeEvent&e);
 	private:
 		static Application*              s_pInstance;
-		Scope<Window>          m_pWindow;
+		Scope<Window>                    m_pWindow;
 		ImGuiLayer*                      m_pImguiLayer;
 		bool                             m_isRunning;
 		bool                             m_minimized;

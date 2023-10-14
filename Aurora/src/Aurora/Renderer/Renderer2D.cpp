@@ -4,6 +4,7 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "RendererCommand.h"
+#include "UniformBuffer.h"
 #include "gtc/matrix_transform.hpp"
 namespace Aurora
 {
@@ -34,6 +35,14 @@ namespace Aurora
 		std::uint32_t    indicesCount = 0;
 		std::uint32_t    textureSlotIndex = 1;
 		Renderer2D::Statistics       stats;
+
+		struct CameraData
+		{
+			glm::mat4 viewProjection;
+		};
+		CameraData cameraData;
+		Ref<UniformBuffer> cameraUniformBuffer;
+
 		Renderer2DStorage() :pVertexBase(NULL), pVertex(NULL)
 		{
 
@@ -93,6 +102,7 @@ namespace Aurora
 
 		s_pData->shader->Bind();
 		s_pData->shader->SetUniformIntArray("u_textures", samplers, s_pData->maxTextureSlotNum);
+		s_pData->cameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DStorage::CameraData), 0);
 	}
 
 	void Renderer2D::Shutdown()
@@ -103,9 +113,8 @@ namespace Aurora
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
-		glm::mat4 viewProjectionMatrix = camera.GetProjection() * glm::inverse(transform);
-		s_pData->shader->Bind();
-		s_pData->shader->SetUniformMat4("u_viewProjection", viewProjectionMatrix);
+		s_pData->cameraData.viewProjection = camera.GetProjection() * glm::inverse(transform);
+		s_pData->cameraUniformBuffer->SetData(&s_pData->cameraData, sizeof(Renderer2DStorage::CameraData));
 		s_pData->pVertex = s_pData->pVertexBase;
 		s_pData->indicesCount = 0;
 		s_pData->textureSlotIndex = 1;
@@ -113,9 +122,8 @@ namespace Aurora
 
 	void Renderer2D::BeginScene(const EditorCamera& editorCamera)
 	{
-		glm::mat4 viewProjectionMatrix = editorCamera.GetViewProjection();
-		s_pData->shader->Bind();
-		s_pData->shader->SetUniformMat4("u_viewProjection", viewProjectionMatrix);
+		s_pData->cameraData.viewProjection = editorCamera.GetViewProjection();
+		s_pData->cameraUniformBuffer->SetData(&s_pData->cameraData, sizeof(Renderer2DStorage::CameraData));
 		s_pData->pVertex = s_pData->pVertexBase;
 		s_pData->indicesCount = 0;
 		s_pData->textureSlotIndex = 1;
@@ -123,8 +131,8 @@ namespace Aurora
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
-		s_pData->shader->Bind();
-		s_pData->shader->SetUniformMat4("u_viewProjection", camera.GetViewProjectionMatrix());
+		s_pData->cameraData.viewProjection = camera.GetViewProjectionMatrix();
+		s_pData->cameraUniformBuffer->SetData(&s_pData->cameraData, sizeof(Renderer2DStorage::CameraData));
 		s_pData->pVertex = s_pData->pVertexBase;
 		s_pData->indicesCount = 0;
 		s_pData->textureSlotIndex = 1;

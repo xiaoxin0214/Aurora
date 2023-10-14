@@ -45,7 +45,7 @@ namespace Aurora
 			m_frameBuffer->UnBind();
 		}
 
-		void OnEvent(const Aurora::Event& e)override
+		void OnEvent(Aurora::Event& e)override
 		{
 			EventDispatcher dispatcher(const_cast<Event&>(e));
 			m_cameraController.OnEvent(e);

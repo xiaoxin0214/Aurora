@@ -86,10 +86,6 @@ namespace Aurora
 			std::uint32_t y = m_viewportBounds.Height() - (mousePos.y - m_viewportBounds.ymin);
 			int pixelData=m_frameBuffer->ReadPixel(1,x,y);
 			m_hoveredEntity = pixelData == -1 ? Entity() : Entity({(entt::entity)pixelData,m_scene.get()});
-			if (m_hoveredEntity)
-			{
-				AURORA_CORE_INFO("{0}",m_hoveredEntity.GetComponent<TagComponent>().tag.c_str());
-			}
 		}
 
 		m_frameBuffer->UnBind();
