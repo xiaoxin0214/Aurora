@@ -27,10 +27,26 @@ namespace Aurora
 		void SetUniformIntArray(const std::string& name, int* values, int count)override;
 	private:
 		static unsigned int CreateShader(int type, const std::string& src);
-		void CompileShader(const std::string& vs, const std::string& fs);
-		void CompileShader(std::unordered_map<GLenum,std::string>&shaderSources);
+
+		void CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
+		void CompileOrGetOpenGLBinaries();
+		void CreateProgram();
+		void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
+
+		const char* GetCacheDirectory()
+		{
+			return "asset/cache/shader/opengl";
+		}
+
+		void CreateCacheDirectoryIfNeeded();
+
 	private:
-		std::uint32_t m_rendererID;
-		std::string  m_name;
+		std::uint32_t                                     m_rendererID;
+		std::string                                       m_name;
+		std::string                                       m_filePath;
+		std::unordered_map<GLenum, std::vector<uint32_t>> m_vulkanSPIRV;
+		std::unordered_map<GLenum, std::vector<uint32_t>> m_openGLSPIRV;
+
+		std::unordered_map<GLenum, std::string>           m_openGLSourceCode;
 	};
 }

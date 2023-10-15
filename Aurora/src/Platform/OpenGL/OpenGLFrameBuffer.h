@@ -10,7 +10,7 @@ namespace Aurora
 		void Invalidate();
 
 		void Resize(std::uint32_t width, std::uint32_t height)override;
-		int ReadPixel(std::uint32_t colorAttachmentIndex,std::uint32_t x,std::uint32_t y)const override;
+		int ReadPixel(std::uint32_t colorAttachmentIndex, std::uint32_t x, std::uint32_t y)const override;
 		void Bind()const override;
 		void UnBind()const override;
 
@@ -24,7 +24,7 @@ namespace Aurora
 			return m_colorAttachments[index];
 		}
 
-		void ClearColorAttachment(std::uint32_t colorAttachmentIndex,int value)override;
+		void ClearColorAttachment(std::uint32_t colorAttachmentIndex, int value)override;
 
 	private:
 		FrameBufferProps m_props;

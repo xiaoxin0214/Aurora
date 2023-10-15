@@ -101,7 +101,6 @@ namespace Aurora
 			samplers[i] = i;
 
 		s_pData->shader->Bind();
-		s_pData->shader->SetUniformIntArray("u_textures", samplers, s_pData->maxTextureSlotNum);
 		s_pData->cameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DStorage::CameraData), 0);
 	}
 
@@ -165,7 +164,7 @@ namespace Aurora
 			s_pData->textureSlotIndex++;
 		}
 
-		s_pData->shader->SetUniformMat4("u_modelMatrix", transform);
+		//s_pData->shader->SetUniformMat4("u_modelMatrix", transform);
 
 		const glm::vec2* texCoords = subTexture->GetTextureCoords();
 		s_pData->pVertex->position = glm::vec3(transform * glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f));
@@ -237,7 +236,7 @@ namespace Aurora
 		}
 		s_pData->shader->Bind();
 		s_pData->vertexArray->Bind();
-		s_pData->shader->SetUniformMat4("u_modelMatrix", glm::mat4(1.0f));
+		//s_pData->shader->SetUniformMat4("u_modelMatrix", glm::mat4(1.0f));
 		RendererCommand::DrawIndexed(s_pData->vertexArray, s_pData->indicesCount);
 		s_pData->stats.drawCalls++;
 	}

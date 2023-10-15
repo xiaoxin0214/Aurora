@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "OpenGLShader.h"
 #include "gtc/type_ptr.hpp"
+
+#include <filesystem>
+
+#include <shaderc/shaderc.hpp>
+#include <spirv_cross/spirv_cross.hpp>
+#include <spirv_cross/spirv_glsl.hpp>
+
 namespace Aurora
 {
 	unsigned int OpenGLShader::CreateShader(int type, const std::string& src)
@@ -24,7 +31,6 @@ namespace Aurora
 			AURORA_CORE_INFO("shader±‡“Î ß∞‹£∫{0}", log.data());
 			return 0;
 		}
-
 
 		return shader;
 	}
@@ -65,6 +71,40 @@ namespace Aurora
 		}
 	}
 
+	static shaderc_shader_kind GLShaderStageToShaderC(GLenum stage)
+	{
+		switch (stage)
+		{
+		case GL_VERTEX_SHADER:   return shaderc_glsl_vertex_shader;
+		case GL_FRAGMENT_SHADER: return shaderc_glsl_fragment_shader;
+		}
+		AURORA_CORE_ASSERT(false,"");
+		return (shaderc_shader_kind)0;
+	}
+
+	static const char* GLShaderStageCachedOpenGLFileExtension(uint32_t stage)
+	{
+		switch (stage)
+		{
+		case GL_VERTEX_SHADER:    return ".cached_opengl.vert";
+		case GL_FRAGMENT_SHADER:  return ".cached_opengl.frag";
+		}
+		AURORA_CORE_ASSERT(false,"");
+		return "";
+	}
+
+
+	static const char* GLShaderStageCachedVulkanFileExtension(uint32_t stage)
+	{
+		switch (stage)
+		{
+		case GL_VERTEX_SHADER:    return ".cached_vulkan.vert";
+		case GL_FRAGMENT_SHADER:  return ".cached_vulkan.frag";
+		}
+		AURORA_CORE_ASSERT(false,"");
+		return "";
+	}
+
 	static void ParseShaderSource(std::string& sourceCode, std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		const char* shaderTypeToken = "#shadertype";
@@ -83,63 +123,196 @@ namespace Aurora
 		}
 	}
 
-	void OpenGLShader::CompileShader(const std::string& vs, const std::string& fs)
+	void OpenGLShader::CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
-		std::unordered_map<GLenum, std::string> shaderSources;
-		shaderSources.emplace(GL_VERTEX_SHADER, vs);
-		shaderSources.emplace(GL_FRAGMENT_SHADER, fs);
-		CompileShader(shaderSources);
-	}
+		GLuint program = glCreateProgram();
 
-	void OpenGLShader::CompileShader(std::unordered_map<GLenum, std::string>& shaderSources)
-	{
-		std::vector<unsigned int> shaderIDLst;
-		unsigned int program = glCreateProgram();
-		for (auto& kv : shaderSources)
+		shaderc::Compiler compiler;
+		shaderc::CompileOptions options;
+		options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
+		const bool optimize = true;
+		if (optimize)
+			options.SetOptimizationLevel(shaderc_optimization_level_performance);
+
+		std::filesystem::path cacheDirectory = GetCacheDirectory();
+
+		auto& shaderData = m_vulkanSPIRV;
+		shaderData.clear();
+		for (auto&& [stage, source] : shaderSources)
 		{
-			GLenum type = kv.first;
-			std::string& source = kv.second;
-			unsigned int shader = CreateShader(type, source);
-			glAttachShader(program, shader);
-			shaderIDLst.emplace_back(shader);
+			std::filesystem::path shaderFilePath = m_filePath;
+			std::filesystem::path cachedPath = cacheDirectory / (shaderFilePath.filename().string() + GLShaderStageCachedVulkanFileExtension(stage));
+
+			std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
+			if (in.is_open())
+			{
+				in.seekg(0, std::ios::end);
+				auto size = in.tellg();
+				in.seekg(0, std::ios::beg);
+
+				auto& data = shaderData[stage];
+				data.resize(size / sizeof(uint32_t));
+				in.read((char*)data.data(), size);
+			}
+			else
+			{
+				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, GLShaderStageToShaderC(stage), m_filePath.c_str(), options);
+				if (module.GetCompilationStatus() != shaderc_compilation_status_success)
+				{
+					AURORA_CORE_ERROR(module.GetErrorMessage());
+					AURORA_CORE_ASSERT(false,"");
+				}
+
+				shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
+
+				std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
+				if (out.is_open())
+				{
+					auto& data = shaderData[stage];
+					out.write((char*)data.data(), data.size() * sizeof(uint32_t));
+					out.flush();
+					out.close();
+				}
+			}
 		}
 
+		for (auto&& [stage, data] : shaderData)
+			Reflect(stage, data);
+	}
+
+	void OpenGLShader::CompileOrGetOpenGLBinaries()
+	{
+		auto& shaderData = m_openGLSPIRV;
+
+		shaderc::Compiler compiler;
+		shaderc::CompileOptions options;
+		options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
+		const bool optimize = true;
+		if (optimize)
+			options.SetOptimizationLevel(shaderc_optimization_level_performance);
+
+		std::filesystem::path cacheDirectory = GetCacheDirectory();
+
+		shaderData.clear();
+		m_openGLSourceCode.clear();
+		for (auto&& [stage, spirv] : m_vulkanSPIRV)
+		{
+			std::filesystem::path shaderFilePath = m_filePath;
+			std::filesystem::path cachedPath = cacheDirectory / (shaderFilePath.filename().string() + GLShaderStageCachedOpenGLFileExtension(stage));
+
+			std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
+			if (in.is_open())
+			{
+				in.seekg(0, std::ios::end);
+				auto size = in.tellg();
+				in.seekg(0, std::ios::beg);
+
+				auto& data = shaderData[stage];
+				data.resize(size / sizeof(uint32_t));
+				in.read((char*)data.data(), size);
+			}
+			else
+			{
+				spirv_cross::CompilerGLSL glslCompiler(spirv);
+				m_openGLSourceCode[stage] = glslCompiler.compile();
+				auto& source = m_openGLSourceCode[stage];
+
+				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, GLShaderStageToShaderC(stage), m_filePath.c_str());
+				if (module.GetCompilationStatus() != shaderc_compilation_status_success)
+				{
+					AURORA_CORE_ERROR(module.GetErrorMessage());
+					AURORA_CORE_ERROR(false);
+				}
+
+				shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
+
+				std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
+				if (out.is_open())
+				{
+					auto& data = shaderData[stage];
+					out.write((char*)data.data(), data.size() * sizeof(uint32_t));
+					out.flush();
+					out.close();
+				}
+			}
+		}
+	}
+
+	void OpenGLShader::CreateCacheDirectoryIfNeeded()
+	{
+		std::string cacheDirectory = GetCacheDirectory();
+		if (!std::filesystem::exists(cacheDirectory))
+			std::filesystem::create_directories(cacheDirectory);
+	}
+
+
+	void OpenGLShader::CreateProgram()
+	{
+		GLuint program = glCreateProgram();
+
+		std::vector<GLuint> shaderIDs;
+		for (auto&& [stage, spirv] : m_openGLSPIRV)
+		{
+			GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
+			glShaderBinary(1, &shaderID, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), spirv.size() * sizeof(uint32_t));
+			glSpecializeShader(shaderID, "main", 0, nullptr, nullptr);
+			glAttachShader(program, shaderID);
+		}
 
 		glLinkProgram(program);
-		GLint isLinked = 0;
-		glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
+
+		GLint isLinked;
+		glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
 		if (isLinked == GL_FALSE)
 		{
-			GLint maxLength = 0;
+			GLint maxLength;
 			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
 			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+			glGetProgramInfoLog(program, maxLength, &maxLength, infoLog.data());
+			AURORA_CORE_ERROR("Shader linking failed ({0}):\n{1}",m_filePath, infoLog.data());
 
 			glDeleteProgram(program);
-			for (auto shaderID : shaderIDLst)
-			{
-				glDeleteShader(shaderID);
-			}
 
-			return;
+			for (auto id : shaderIDs)
+				glDeleteShader(id);
 		}
 
-		for (auto shaderID : shaderIDLst)
+		for (auto id : shaderIDs)
 		{
-			glDetachShader(program, shaderID);
+			glDetachShader(program, id);
+			glDeleteShader(id);
 		}
 
 		m_rendererID = program;
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& path)
+	void OpenGLShader::Reflect(GLenum stage, const std::vector<uint32_t>& shaderData)
 	{
+		spirv_cross::Compiler compiler(shaderData);
+		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+
+		for (const auto& resource : resources.uniform_buffers)
+		{
+			const auto& bufferType = compiler.get_type(resource.base_type_id);
+			uint32_t bufferSize = compiler.get_declared_struct_size(bufferType);
+			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			int memberCount = bufferType.member_types.size();
+		}
+	}
+
+	OpenGLShader::OpenGLShader(const std::string& path):m_filePath(path)
+	{
+		CreateCacheDirectoryIfNeeded();
+
 		std::string content;
 		ReadFile(path, content);
 		std::unordered_map<GLenum, std::string> shaderSources;
 		ParseShaderSource(content, shaderSources);
-		CompileShader(shaderSources);
+
+		CompileOrGetVulkanBinaries(shaderSources);
+		CompileOrGetOpenGLBinaries();
+		CreateProgram();
 
 		auto lastSlash = path.find_last_of("/\\");
 		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash;
@@ -150,7 +323,14 @@ namespace Aurora
 
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vs, const std::string& fs)
 	{
-		CompileShader(vs, fs);
+		std::unordered_map<GLenum, std::string> shaderSources;
+		shaderSources.emplace(GL_VERTEX_SHADER, vs);
+		shaderSources.emplace(GL_FRAGMENT_SHADER, fs);
+
+		CompileOrGetVulkanBinaries(shaderSources);
+		CompileOrGetOpenGLBinaries();
+		CreateProgram();
+
 		m_name = name;
 	}
 
