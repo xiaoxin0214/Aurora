@@ -1,6 +1,7 @@
 #include "SceneHierarchyPanel.h"
 #include "imgui.h"
 #include "gtc/type_ptr.hpp"
+#include <filesystem>
 namespace Aurora
 {
 	SceneHierarchyPanel::SceneHierarchyPanel(Ref<Scene>& context)
@@ -229,6 +230,17 @@ namespace Aurora
 
 		DrawComponent<MeshComponent>(u8"Mesh", entity, [](MeshComponent& meshComponent) {
 			ImGui::ColorEdit4(u8"»ù´¡É«", glm::value_ptr(meshComponent.color));
+			ImGui::Button(u8"ÎÆÀí", ImVec2(100.0f, 0.0f));
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					std::filesystem::path texturePath(path);
+					meshComponent.texture = Texture2D::Create(texturePath.string());
+				}
+				ImGui::EndDragDropTarget();
+			}
 			});
 	}
 }

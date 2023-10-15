@@ -4,6 +4,7 @@
 #include "Aurora/Core/Timestep.h"
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
+#include "Aurora/Renderer/Texture.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "gtx/quaternion.hpp"
@@ -43,6 +44,7 @@ namespace Aurora
 
 	struct MeshComponent {
 		glm::vec4 color;
+		Ref<Texture> texture;
 		MeshComponent() :color(glm::vec4(1.0f,0.0f,0.0f,1.0f))
 		{
 

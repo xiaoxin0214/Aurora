@@ -210,6 +210,12 @@ namespace Aurora
 		DrawQuad(transform, subTexture2D, color, entityID);
 	}
 
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID)
+	{
+		auto subTexture2D = SubTexture2D::Create(texture, glm::vec2(0.0f), glm::vec2(1.0f));
+		DrawQuad(transform, subTexture2D, tintColor, entityID);
+	}
+
 	void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rotation, const Ref<Texture>& texture, const glm::vec4& tintColor)
 	{
 		auto subTexture2D = SubTexture2D::Create(texture, glm::vec2(0.0f), glm::vec2(1.0f));
