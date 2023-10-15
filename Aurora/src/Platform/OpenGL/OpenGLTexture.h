@@ -17,6 +17,12 @@ namespace Aurora
 			return m_height;
 		}
 		void Bind(std::uint32_t slot)const override;
+
+		std::uint32_t GetRendererID()const override
+		{
+			return m_textureID;
+		}
+
 		bool operator ==(const Texture& rhs)const override
 		{
 			return m_textureID == ((OpenGLTexture2D&)rhs).m_textureID;

@@ -1,7 +1,7 @@
 #pragma once
 #include "Aurora.h"
 #include "SceneHierarchyPanel.h"
-
+#include "ContentBrowserPanel.h"
 namespace Aurora
 {
 	class EditorLayer :public Layer {
@@ -23,12 +23,14 @@ namespace Aurora
 		void NewScene();
 		void SaveAsScene();
 		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
 	private:
 		Ref<Texture>                      m_texture;
 		Ref<FrameBuffer>                  m_frameBuffer;
 		Ref<Scene>                        m_scene;
 		EditorCamera                      m_editorCamera;
 		SceneHierarchyPanel               m_sceneHierarchyPanel;
+		ContentBrowserPanel               m_contentBrowserPanel;
 		BoundingBox2<std::uint32_t>       m_viewportBounds;
 		Entity                            m_hoveredEntity;
 		glm::vec4                         m_color;

@@ -45,7 +45,7 @@ namespace Aurora
 		}
 	};
 
-	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_viewportSize(0.0, 0.0), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false), m_imguizmoOperation(-1)
+	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_viewportSize(0.0, 0.0), m_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)), m_viewportFocused(false), m_viewportHovered(false), m_imguizmoOperation(-1), m_contentBrowserPanel("asset")
 	{
 		m_texture = Texture2D::Create("asset\\textures\\tilemap_packed.png");
 	}
@@ -181,10 +181,15 @@ namespace Aurora
 		std::string filePath = FileDialog::OpenFile("Scene(*.scene)\0*.scene\0");
 		if (!filePath.empty())
 		{
-			NewScene();
-			SceneSerializer sceneSerializer(m_scene);
-			sceneSerializer.Deserialize(filePath);
+			OpenScene(filePath);
 		}
+	}
+
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	{
+		NewScene();
+		SceneSerializer sceneSerializer(m_scene);
+		sceneSerializer.Deserialize(path.string());
 	}
 
 	void EditorLayer::SaveAsScene()
@@ -254,6 +259,7 @@ namespace Aurora
 		}
 
 		m_sceneHierarchyPanel.OnImGuiRender();
+		m_contentBrowserPanel.OnImGuiRender();
 
 		auto stats = Renderer2D::GetStatistics();
 
@@ -285,6 +291,16 @@ namespace Aurora
 		}
 		auto textureID = m_frameBuffer->GetColorAttachmentID(0);
 		ImGui::Image((void*)textureID, ImVec2(m_viewportSize.x, m_viewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				OpenScene(path);
+			}
+			ImGui::EndDragDropTarget();
+		}
 
 		auto windowSize = ImGui::GetWindowSize();
 		auto minBound = ImGui::GetWindowPos();
