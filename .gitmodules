@@ -5,6 +5,7 @@
 [submodule "Aurora/vendor/GLFW"]
 	path = Aurora/vendor/GLFW
 	url = https://github.com/xiaoxin0214/glfw.git
+	branch = master
 [submodule "Aurora/vendor/imgui"]
 	path = Aurora/vendor/imgui
 	url = https://github.com/xiaoxin0214/imgui.git
@@ -12,9 +13,11 @@
 [submodule "Aurora/vendor/yaml-cpp"]
 	path = Aurora/vendor/yaml-cpp
 	url = https://github.com/xiaoxin0214/yaml-cpp.git
+	branch = master
 [submodule "Aurora/vendor/glm"]
 	path = Aurora/vendor/glm
 	url = https://github.com/g-truc/glm.git
 [submodule "Aurora/vendor/ImGuizmo"]
 	path = Aurora/vendor/ImGuizmo
 	url = https://github.com/xiaoxin0214/ImGuizmo.git
+	branch = master
